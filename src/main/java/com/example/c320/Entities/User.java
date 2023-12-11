@@ -19,6 +19,7 @@ public class User {
     private Basket basket;
 
     public User() {
+
     }
 
     public Basket getBasket() {
