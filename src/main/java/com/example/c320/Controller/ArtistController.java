@@ -17,10 +17,10 @@ public class ArtistController {
         return artistService.getAllArtists();
     }
 
-    @GetMapping("/{id}")
-    public Artist getArtistById(@PathVariable String id) {
-        return artistService.getArtistById(id);
-    }
+    @GetMapping("/id/{id}")
+    public Artist getArtistById(@PathVariable String id) { return artistService.getArtistById(id); }
+    @GetMapping("/name/{name}")
+    public Artist getArtistByName(@PathVariable String name) { return artistService.getArtistByName(name); }
 
     @PostMapping
     public Artist createArtist(@RequestBody Artist artist) {

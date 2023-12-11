@@ -1,7 +1,12 @@
 package com.example.c320.Repositories;
 import com.example.c320.Entities.Artist;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 public interface ArtistRepository extends MongoRepository<Artist, String> {
-    // Custom query methods can be defined here
+
+    // In the @Query annotation, ?0 refers to the first parameter of the method. You can use ?1, ?2, etc., to refer to subsequent method parameters if needed.
+    @Query("{ 'name' : ?0 }")
+    Artist findByName(String name);
+
 }

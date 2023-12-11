@@ -16,6 +16,7 @@ public class ArtistService {
     public Artist getArtistById(String id) {
         return artistRepository.findById(id).orElse(null);
     }
+    public Artist getArtistByName(String name) { return artistRepository.findByName(name); }
     public Artist createArtist(Artist artist) {
         return artistRepository.save(artist);
     }
