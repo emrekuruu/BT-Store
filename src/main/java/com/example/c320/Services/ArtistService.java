@@ -13,7 +13,7 @@ public class ArtistService {
     public List<Artist> getAllArtists() {
         return artistRepository.findAll();
     }
-    public Artist getArtistById(Long id) {
+    public Artist getArtistById(String id) {
         return artistRepository.findById(id).orElse(null);
     }
     public Artist createArtist(Artist artist) {

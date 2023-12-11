@@ -13,7 +13,7 @@ public class BasketService {
     public List<Basket> getAllBaskets() {
         return basketRepository.findAll();
     }
-    public Basket getBasketById(Long id) {
+    public Basket getBasketById(String id) {
         return basketRepository.findById(id).orElse(null);
     }
     public Basket createBasket(Basket basket) {

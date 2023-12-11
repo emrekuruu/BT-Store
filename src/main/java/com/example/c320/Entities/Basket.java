@@ -12,7 +12,7 @@ public class Basket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     User user;
     Double total = 0.0;
     List<Painting> paintings;
@@ -20,11 +20,11 @@ public class Basket {
     public Basket() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

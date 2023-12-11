@@ -10,7 +10,7 @@ public class Artist {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+        private String id;
         String name;
         String surname;
         String username;
@@ -20,11 +20,11 @@ public class Artist {
     public Artist() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

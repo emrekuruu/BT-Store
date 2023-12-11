@@ -18,7 +18,7 @@ public class BasketController {
     }
 
     @GetMapping("/{id}")
-    public Basket getBasketById(@PathVariable Long id) {
+    public Basket getBasketById(@PathVariable String id) {
         return basketService.getBasketById(id);
     }
 

@@ -18,7 +18,7 @@ public class PaintingController {
     }
 
     @GetMapping("/{id}")
-    public Painting getPaintingById(@PathVariable Long id) {
+    public Painting getPaintingById(@PathVariable String id) {
         return paintingService.getPaintingById(id);
     }
 

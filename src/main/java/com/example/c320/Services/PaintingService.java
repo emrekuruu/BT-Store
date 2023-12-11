@@ -13,7 +13,7 @@ public class PaintingService {
     public List<Painting> getAllPaintings() {
         return paintingRepository.findAll();
     }
-    public Painting getPaintingById(Long id) {
+    public Painting getPaintingById(String id) {
         return paintingRepository.findById(id).orElse(null);
     }
     public Painting createPainting(Painting painting) {
