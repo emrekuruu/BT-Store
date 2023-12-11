@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "baskets")
@@ -15,7 +16,7 @@ public class Basket {
     private String id;
     User user;
     Double total = 0.0;
-    List<Painting> paintings;
+    List<Painting> paintings = new ArrayList<Painting>();
 
     public Basket() {
     }

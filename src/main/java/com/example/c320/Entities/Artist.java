@@ -3,6 +3,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "artists")
@@ -15,7 +17,7 @@ public class Artist {
         String surname;
         String username;
         String password;
-        List<Painting> paintings;
+        List<Painting> paintings = new ArrayList<Painting>();
 
     public Artist() {
     }
