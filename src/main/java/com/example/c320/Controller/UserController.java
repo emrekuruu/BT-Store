@@ -1,8 +1,6 @@
 package com.example.c320.Controller;
-
 import com.example.c320.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.c320.Entities.User;
 import java.util.List;
@@ -20,7 +18,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable String id) {
+    public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
