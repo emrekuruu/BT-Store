@@ -1,9 +1,11 @@
 package com.example.c320.Services;
 import com.example.c320.Entities.Basket;
 import com.example.c320.Entities.Painting;
+import com.example.c320.Entities.Purchase;
 import com.example.c320.Entities.User;
 import com.example.c320.Repositories.BasketRepository;
 import com.example.c320.Repositories.PaintingRepository;
+import com.example.c320.Repositories.PurchaseRepository;
 import com.example.c320.Repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.BDDMockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -25,6 +28,8 @@ public class UserServiceTest {
     private PaintingRepository paintingRepository;
     @Mock
     private BasketRepository basketRepository;
+    @Mock
+    private PurchaseRepository purchaseRepository;
     @InjectMocks
     private UserService userService;
 
@@ -228,6 +233,52 @@ public class UserServiceTest {
         verify(basketRepository, never()).delete(any(Basket.class));
     }
 
+    @Test
+    public void purchase_Success() {
+        // Arrange
+        String userId = "user123";
+        User user = new User();
+        user.setId(userId);
+        Basket basket = new Basket();
+        Painting painting = new Painting();
+        painting.setPrice(100.0);
+        basket.getPaintings().add(painting);
+        basket.setTotal(100.0);
+        user.setBasket(basket);
+
+        List<Painting> paintings = basket.getPaintings();
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(basketRepository.save(any(Basket.class))).willReturn(basket);
+        given(userRepository.save(any(User.class))).willReturn(user);
+
+        // Act
+        Purchase purchase = userService.purchase(userId);
+
+        // Assert
+        assertNotNull(purchase, "Purchase should not be null");
+        assertEquals(paintings,purchase.getPaintings(), "Purhase should include the bought items");
+        assertEquals(100.0, purchase.getTotal(), "Total should be reset to 0 in the purchase");
+        assertTrue(user.getBasket().getPaintings().isEmpty(), "Basket should be empty after purchase");
+        assertEquals(0.0, user.getBasket().getTotal(), "Basket total should be reset to 0 after purchase");
+    }
+
+    @Test
+    public void purchase_WhenBasketEmpty_ThrowsException() {
+        // Arrange
+        String userId = "user123";
+        User user = new User();
+        user.setId(userId);
+        Basket basket = new Basket();
+        user.setBasket(basket);
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+
+        // Act & Assert
+        assertThrows(IllegalStateException.class, () -> {
+            userService.purchase(userId);
+        }, "Should throw IllegalStateException when basket is empty");
+    }
 
 
 }
