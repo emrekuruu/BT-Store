@@ -2,9 +2,11 @@ package com.example.c320.Services;
 import com.example.c320.Entities.Artist;
 import com.example.c320.Entities.Basket;
 import com.example.c320.Entities.Painting;
+import com.example.c320.Entities.User;
 import com.example.c320.Repositories.ArtistRepository;
 import com.example.c320.Repositories.BasketRepository;
 import com.example.c320.Repositories.PaintingRepository;
+import com.example.c320.Repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -29,6 +31,9 @@ public class PaintingServiceTest {
     @Mock
     private BasketRepository basketRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private PaintingService paintingService;
 
@@ -38,6 +43,9 @@ public class PaintingServiceTest {
 
     @Captor
     private ArgumentCaptor<Artist> artistCaptor;
+
+    @Captor
+    private ArgumentCaptor<User> userCaptor;
 
 
     @Test
@@ -90,11 +98,14 @@ public class PaintingServiceTest {
         basketPaintings.add(originalPainting);
         basket.setPaintings(basketPaintings);
 
+        User user = new User();
+        user.setBasket(basket);
+
         given(paintingRepository.findById(paintingId)).willReturn(Optional.of(originalPainting));
         given(paintingRepository.save(any(Painting.class))).willAnswer(invocation -> invocation.getArgument(0));
         given(artistRepository.findByPaintingsId(paintingId)).willReturn(artist);
         given(basketRepository.findAllByPaintingsId(paintingId)).willReturn(Collections.singletonList(basket));
-
+        given(userRepository.findById(basket.getUserID())).willReturn(Optional.of(user));
         // Act
         Painting updatedPainting = paintingService.updatePainting(paintingId, updatedData);
 
@@ -103,17 +114,24 @@ public class PaintingServiceTest {
         assertEquals(updatedData.getName(), updatedPainting.getName());
         assertEquals(updatedData.getDescription(), updatedPainting.getDescription());
 
-        // Verify that the painting is updated in artist and basket as well
+        // Verify that the painting is updated in artist, basket, and user
         verify(artistRepository, times(1)).save(artistCaptor.capture());
         Painting updatedArtistPainting = artistCaptor.getValue().getPaintings().get(0);
-        assertEquals(updatedData.getName(), updatedArtistPainting.getName()); // This should fail
-        assertEquals(updatedData.getDescription(), updatedArtistPainting.getDescription()); // This should fail
+        assertEquals(updatedData.getName(), updatedArtistPainting.getName());
+        assertEquals(updatedData.getDescription(), updatedArtistPainting.getDescription());
 
         verify(basketRepository, times(1)).save(basketCaptor.capture());
         Painting updatedBasketPainting = basketCaptor.getValue().getPaintings().get(0);
-        assertEquals(updatedData.getName(), updatedBasketPainting.getName()); // This should fail
-        assertEquals(updatedData.getDescription(), updatedBasketPainting.getDescription()); // This should fail
+        assertEquals(updatedData.getName(), updatedBasketPainting.getName());
+        assertEquals(updatedData.getDescription(), updatedBasketPainting.getDescription());
+
+        verify(userRepository, times(1)).save(userCaptor.capture());
+        User updatedUser = userCaptor.getValue();
+        Painting updatedUserBasketPainting = updatedUser.getBasket().getPaintings().get(0);
+        assertEquals(updatedData.getName(), updatedUserBasketPainting.getName());
+        assertEquals(updatedData.getDescription(), updatedUserBasketPainting.getDescription());
     }
+
 
 
 
