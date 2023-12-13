@@ -14,7 +14,7 @@ public class Painting {
     String name;
     String description;
     Artist artist;
-    Double price;
+    Double price = 0.0;
 
     public Painting() {
     }
