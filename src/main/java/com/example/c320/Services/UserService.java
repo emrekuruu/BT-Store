@@ -33,40 +33,40 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        userRepository.save(user);
         Basket basket = new Basket();
-        basket.setUser(user);
+        basket.setUserID(user.getId());
+        user.setBasket(basket);
         basketRepository.save(basket);
         return userRepository.save(user);
     }
 
     public User addPaintingToBasket(String userId, String paintingId) {
-        // Retrieve the user by ID
+        // Retrieve the user and painting as before
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
-
-        // Retrieve the painting by ID
         Painting painting = paintingRepository.findById(paintingId)
                 .orElseThrow(() -> new NoSuchElementException("Painting not found with ID: " + paintingId));
 
-        // Retrieve or create the basket
         Basket basket = user.getBasket();
-        if (basket == null) {
-            basket = new Basket();
-            basket.setUser(user);
-            user.setBasket(basket);
+        List<Painting> paintings = basket.getPaintings();
+
+        // Check if the painting is already in the basket by comparing IDs
+        boolean paintingExists = paintings.stream()
+                .anyMatch(p -> p.getId().equals(painting.getId()));
+
+        if (!paintingExists) {
+            paintings.add(painting);
+            // Update the total price in the basket
+            double newTotal = basket.getTotal() + painting.getPrice();
+            basket.setTotal(newTotal);
         }
 
-        // Add the painting to the basket
-        basket.getPaintings().add(painting);
-
-        // Update the total price in the basket
-        double newTotal = basket.getTotal() + painting.getPrice();
-        basket.setTotal(newTotal);
-
-        // Save the updated basket and user
-        basketRepository.save(basket); // Save the basket
-        return userRepository.save(user); // Save the user
+        // Save the updated basket and user as before
+        basketRepository.save(basket);
+        return userRepository.save(user);
     }
+
 
     // Additional methods for update and delete
 }

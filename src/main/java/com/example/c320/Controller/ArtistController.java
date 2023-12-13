@@ -1,4 +1,5 @@
 package com.example.c320.Controller;
+import com.example.c320.Entities.Painting;
 import com.example.c320.Services.ArtistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ public class ArtistController {
 
     @Autowired
     private ArtistService artistService;
+
     @GetMapping
     public List<Artist> getAllArtists() {
         return artistService.getAllArtists();
@@ -33,6 +35,11 @@ public class ArtistController {
         return artistService.createArtist(artist);
     }
     // Additional endpoints for update and delete
+
+    @PostMapping("/{artistId}/add")
+    public Artist addPainting(@RequestBody Painting painting, @PathVariable String artistId) {
+        return artistService.addPainting(painting,artistId);
+    }
 
 }
 

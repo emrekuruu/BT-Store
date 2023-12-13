@@ -12,7 +12,6 @@ public class BasketController {
 
     @Autowired
     private BasketService basketService;
-
     @GetMapping
     public List<Basket> getAllBaskets() {
         return basketService.getAllBaskets();
@@ -23,10 +22,5 @@ public class BasketController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    @PostMapping
-    public Basket createBasket(@RequestBody Basket basket) {
-        return basketService.createBasket(basket);
-    }
-
     // Additional endpoints for update and delete
 }

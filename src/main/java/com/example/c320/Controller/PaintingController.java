@@ -15,7 +15,6 @@ public class PaintingController {
 
     @Autowired
     private PaintingService paintingService;
-
     @GetMapping
     public List<Painting> getAllPaintings() {
         return paintingService.getAllPaintings();
@@ -25,10 +24,6 @@ public class PaintingController {
         return paintingService.getPaintingById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-    @PostMapping
-    public Painting createPainting(@RequestBody Painting painting) {
-        return paintingService.createPainting(painting);
     }
     @PutMapping("/update/{paintingId}")
     public ResponseEntity<Painting> updatePainting(@PathVariable String paintingId, @RequestBody Painting paintingData) {

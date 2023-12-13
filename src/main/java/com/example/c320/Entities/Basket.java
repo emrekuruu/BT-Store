@@ -3,8 +3,6 @@ package com.example.c320.Entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +11,7 @@ public class Basket {
 
     @Id
     private String id;
-    User user;
+    String userID;
     Double total = 0.0;
     List<Painting> paintings = new ArrayList<Painting>();
 
@@ -28,12 +26,12 @@ public class Basket {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserID() {
+        return userID;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public Double getTotal() {
@@ -49,6 +47,12 @@ public class Basket {
     }
 
     public void setPaintings(List<Painting> paintings) {
+        double total = 0;
+
+        for(Painting p : paintings)
+            total += p.getPrice();
+
+        setTotal(total);
         this.paintings = paintings;
     }
 }

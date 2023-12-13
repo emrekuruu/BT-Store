@@ -1,9 +1,13 @@
 package com.example.c320.Services;
 import com.example.c320.Entities.Artist;
+import com.example.c320.Entities.Painting;
 import com.example.c320.Repositories.ArtistRepository;
+import com.example.c320.Repositories.PaintingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -11,6 +15,8 @@ public class ArtistService {
 
     @Autowired
     private ArtistRepository artistRepository;
+    @Autowired
+    private PaintingRepository paintingRepository;
     public List<Artist> getAllArtists() {
         return artistRepository.findAll();
     }
@@ -19,6 +25,15 @@ public class ArtistService {
     public Artist createArtist(Artist artist) {
         return artistRepository.save(artist);
     }
+    public Artist addPainting(Painting painting, String artistId){
 
+        Artist artist = artistRepository.findById(artistId)
+                .orElseThrow(() -> new NoSuchElementException("Artist not found with ID: " + artistId));
+
+        artist.getPaintings().add(painting);
+        painting.setArtistID(artist.getId());
+        paintingRepository.save(painting);
+        return artistRepository.save(artist);
+    }
     // Additional methods for update and delete
 }

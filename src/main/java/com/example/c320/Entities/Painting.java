@@ -3,9 +3,6 @@ package com.example.c320.Entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-
 @Document(collection = "paintings")
 public class Painting {
 
@@ -13,7 +10,7 @@ public class Painting {
     private String id;
     String name;
     String description;
-    Artist artist;
+    String artistID;
     Double price = 0.0;
 
     public Painting() {
@@ -43,12 +40,12 @@ public class Painting {
         this.description = description;
     }
 
-    public Artist getArtist() {
-        return artist;
+    public String getArtistID() {
+        return artistID;
     }
 
-    public void setArtist(Artist artist) {
-        this.artist = artist;
+    public void setArtistID(String artistID) {
+        this.artistID = artistID;
     }
 
     public Double getPrice() {

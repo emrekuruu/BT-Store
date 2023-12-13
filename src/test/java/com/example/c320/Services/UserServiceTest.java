@@ -76,7 +76,6 @@ public class UserServiceTest {
         // Mock saving of user and basket if necessary
         given(userRepository.save(any(User.class))).willReturn(user);
         given(basketRepository.save(any(Basket.class))).willReturn(basket);
-
         // Act
         User updatedUser = userService.addPaintingToBasket(userId, paintingId);
         // Assert
@@ -84,6 +83,29 @@ public class UserServiceTest {
         assertTrue(updatedUser.getBasket().getPaintings().contains(painting));
         assertEquals(total + painting.getPrice(), updatedUser.getBasket().getTotal());
     }
+
+    @Test
+    public void addPaintingToBasket_WhenPaintingAlreadyInBasket_NoChange() {
+        // Arrange
+        String userId = "user123";
+        String paintingId = "painting123";
+        User user = new User();
+        Basket basket = new Basket();
+        Painting painting = new Painting();
+        painting.setId(paintingId);
+        painting.setPrice(20.0);
+        basket.getPaintings().add(painting);
+        basket.setTotal(20.0);
+        user.setBasket(basket);
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(paintingRepository.findById(paintingId)).willReturn(Optional.of(painting));
+        // Act
+        userService.addPaintingToBasket(userId, paintingId);
+        // Assert
+        assertEquals(1, user.getBasket().getPaintings().size(), "No additional paintings should be added");
+        assertEquals(20.0, user.getBasket().getTotal(), "Total should remain unchanged");
+    }
+
 
     @Test
     public void addPaintingToBasket_UserNotFound() {
