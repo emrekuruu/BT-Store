@@ -69,6 +69,8 @@ public class UserServiceTest {
         painting.setId(paintingId);
         painting.setPrice(20.2);
 
+        Double total = basket.getTotal();
+
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
         given(paintingRepository.findById(paintingId)).willReturn(Optional.of(painting));
         // Mock saving of user and basket if necessary
@@ -77,10 +79,10 @@ public class UserServiceTest {
 
         // Act
         User updatedUser = userService.addPaintingToBasket(userId, paintingId);
-
         // Assert
         assertNotNull(updatedUser.getBasket());
         assertTrue(updatedUser.getBasket().getPaintings().contains(painting));
+        assertEquals(total + painting.getPrice(), updatedUser.getBasket().getTotal());
     }
 
     @Test
