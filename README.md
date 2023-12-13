@@ -1,1 +1,1 @@
-Implementation of our the CS-320 Project BT-Store.
+Implementation of our CS-320 Project BT-Store.
