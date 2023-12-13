@@ -11,7 +11,6 @@ import java.util.List;
 public class Artist {
 
         @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private String id;
         String name;
         String surname;

@@ -12,7 +12,6 @@ import java.util.List;
 public class Basket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     User user;
     Double total = 0.0;

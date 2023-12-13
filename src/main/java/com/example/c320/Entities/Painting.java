@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 public class Painting {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     String name;
     String description;

@@ -1,6 +1,8 @@
 package com.example.c320.Controller;
+import com.example.c320.Entities.Painting;
 import com.example.c320.Services.PaintingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.c320.Entities.Painting;
 import java.util.List;
@@ -17,9 +19,12 @@ public class PaintingController {
         return paintingService.getAllPaintings();
     }
 
-    @GetMapping("/{id}")
-    public Painting getPaintingById(@PathVariable String id) {
-        return paintingService.getPaintingById(id);
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Painting> getPaintingById(@PathVariable String id) {
+        return paintingService.getPaintingById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping

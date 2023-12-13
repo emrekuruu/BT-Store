@@ -4,6 +4,7 @@ import com.example.c320.Repositories.BasketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BasketService {
@@ -13,8 +14,8 @@ public class BasketService {
     public List<Basket> getAllBaskets() {
         return basketRepository.findAll();
     }
-    public Basket getBasketById(String id) {
-        return basketRepository.findById(id).orElse(null);
+    public Optional<Basket> getBasketById(String id) {
+        return basketRepository.findById(id);
     }
     public Basket createBasket(Basket basket) {
         return basketRepository.save(basket);
