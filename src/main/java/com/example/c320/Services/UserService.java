@@ -1,12 +1,16 @@
 package com.example.c320.Services;
 import com.example.c320.Entities.Basket;
 import com.example.c320.Entities.Painting;
+import com.example.c320.Entities.Purchase;
 import com.example.c320.Entities.User;
 import com.example.c320.Repositories.PaintingRepository;
+import com.example.c320.Repositories.PurchaseRepository;
 import com.example.c320.Repositories.UserRepository;
 import com.example.c320.Repositories.BasketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -22,6 +26,9 @@ public class UserService {
 
     @Autowired
     private PaintingRepository paintingRepository;
+
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
 
     public List<User> getAllUsers() {
@@ -101,6 +108,32 @@ public class UserService {
         basketRepository.delete(user.getBasket());
         // Delete the user
         userRepository.delete(user);
+    }
+
+    public Purchase purchase(String userId) {
+        // Retrieve the user and their basket
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
+        Basket basket = user.getBasket();
+
+        if (basket.getPaintings().isEmpty()) {
+            throw new IllegalStateException("Basket is empty.");
+        }
+        // Record the purchase
+        Purchase purchase = new Purchase();
+        purchase.setUserID(user.getId());
+        purchase.setPaintings(basket.getPaintings());
+        purchase.setTotal(basket.getTotal());
+        purchaseRepository.save(purchase);
+        // Clear the items in the basket
+        basket.setPaintings(new ArrayList<Painting>());
+        // Save the cleared basket
+        basketRepository.save(basket);
+        // Save the user
+        user.setBasket(basket);
+        userRepository.save(user);
+
+        return purchase;
     }
 
     // Additional methods for update and delete

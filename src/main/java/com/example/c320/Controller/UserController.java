@@ -1,4 +1,5 @@
 package com.example.c320.Controller;
+import com.example.c320.Entities.Purchase;
 import com.example.c320.Entities.User;
 import com.example.c320.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,20 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PostMapping("/{userId}/purchase")
+    public ResponseEntity<?> completePurchase(@PathVariable String userId) {
+        try {
+            Purchase purchase = userService.purchase(userId);
+            return ResponseEntity.ok(purchase);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
 
