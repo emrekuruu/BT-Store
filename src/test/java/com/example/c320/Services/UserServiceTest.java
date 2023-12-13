@@ -137,5 +137,59 @@ public class UserServiceTest {
             userService.addPaintingToBasket(userId, paintingId);
         });
     }
+    @Test
+    public void removePaintingFromBasket_Success() {
+        // Arrange
+        String userId = "user123";
+        String paintingId = "painting123";
+        User user = new User();
+        user.setId(userId);
+        Basket basket = new Basket();
+        Painting painting = new Painting();
+        painting.setId(paintingId);
+        painting.setPrice(20.0);
+        basket.getPaintings().add(painting);
+        basket.setTotal(20.0);
+        user.setBasket(basket);
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(paintingRepository.findById(paintingId)).willReturn(Optional.of(painting));
+        // Mock saving of user and basket if necessary
+        given(userRepository.save(any(User.class))).willReturn(user);
+        given(basketRepository.save(any(Basket.class))).willReturn(basket);
+
+        // Act
+        User updatedUser = userService.removePaintingFromBasket(userId, paintingId);
+
+        // Assert
+        assertTrue(updatedUser.getBasket().getPaintings().isEmpty(), "Basket should be empty after removing the painting");
+        assertEquals(0.0, updatedUser.getBasket().getTotal(), "Total should be updated correctly");
+    }
+
+    @Test
+    public void removePaintingFromBasket_PaintingNotInBasket_NoChange() {
+        // Arrange
+        String userId = "user123";
+        String paintingId = "paintingNotInBasket123";
+        User user = new User();
+        user.setId(userId);
+        Basket basket = new Basket();
+        user.setBasket(basket);
+
+        Painting paintingNotInBasket = new Painting();
+        paintingNotInBasket.setId(paintingId);
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(paintingRepository.findById(paintingId)).willReturn(Optional.of(paintingNotInBasket));
+        given(userRepository.save(any(User.class))).willReturn(user);
+
+        // Act
+        User updatedUser = userService.removePaintingFromBasket(userId, paintingId);
+
+        // Assert
+        assertTrue(updatedUser.getBasket().getPaintings().isEmpty(), "Basket should remain unchanged");
+        assertEquals(0.0, updatedUser.getBasket().getTotal(), "Total should remain unchanged");
+    }
+
 
 }

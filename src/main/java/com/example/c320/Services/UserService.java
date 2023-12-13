@@ -66,6 +66,31 @@ public class UserService {
         basketRepository.save(basket);
         return userRepository.save(user);
     }
+    public User removePaintingFromBasket(String userId, String paintingId) {
+        // Retrieve the user and painting
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
+        Painting painting = paintingRepository.findById(paintingId)
+                .orElseThrow(() -> new NoSuchElementException("Painting not found with ID: " + paintingId));
+
+        Basket basket = user.getBasket();
+        List<Painting> paintings = basket.getPaintings();
+
+        // Check if the painting is in the basket
+        boolean paintingExists = paintings.stream()
+                .anyMatch(p -> p.getId().equals(painting.getId()));
+
+        if (paintingExists) {
+            paintings.removeIf(p -> p.getId().equals(painting.getId()));
+            // Update the total price in the basket
+            double newTotal = basket.getTotal() - painting.getPrice();
+            basket.setTotal(newTotal >= 0 ? newTotal : 0); // Ensure total doesn't go negative
+        }
+
+        // Save the updated basket and user
+        basketRepository.save(basket);
+        return userRepository.save(user);
+    }
 
 
     // Additional methods for update and delete

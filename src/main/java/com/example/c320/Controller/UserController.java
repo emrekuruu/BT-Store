@@ -44,5 +44,16 @@ public class UserController {
         }
     }
 
-
+    @DeleteMapping("/{userId}/basket/remove/{paintingId}")
+    public ResponseEntity<User> removePaintingFromBasket(@PathVariable String userId, @PathVariable String paintingId) {
+        try {
+            User updatedUser = userService.removePaintingFromBasket(userId, paintingId);
+            return ResponseEntity.ok(updatedUser);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
+
