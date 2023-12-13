@@ -191,5 +191,42 @@ public class UserServiceTest {
         assertEquals(0.0, updatedUser.getBasket().getTotal(), "Total should remain unchanged");
     }
 
+    @Test
+    public void deleteUser_Success() {
+        // Arrange
+        String userId = "user123";
+        User user = new User();
+        user.setId(userId);
+        Basket basket = new Basket();
+        user.setBasket(basket);
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        willDoNothing().given(userRepository).delete(user);
+
+        // Act
+        userService.deleteUser(userId);
+
+        // Assert
+        verify(userRepository, times(1)).delete(user);
+        verify(basketRepository, times(1)).delete(basket);
+    }
+
+
+    @Test
+    public void deleteUser_UserNotFound() {
+        // Arrange
+        String userId = "nonexistentUser";
+        given(userRepository.findById(userId)).willReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NoSuchElementException.class, () -> {
+            userService.deleteUser(userId);
+        });
+
+        verify(userRepository, never()).delete(any(User.class));
+        verify(basketRepository, never()).delete(any(Basket.class));
+    }
+
+
 
 }

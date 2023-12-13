@@ -92,6 +92,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void deleteUser(String userId) {
+        // Optional: Check if the user exists before attempting to delete
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
+
+        // Delete the users basket
+        basketRepository.delete(user.getBasket());
+        // Delete the user
+        userRepository.delete(user);
+    }
 
     // Additional methods for update and delete
 }
