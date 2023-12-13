@@ -202,6 +202,7 @@ public class UserServiceTest {
 
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
         willDoNothing().given(userRepository).delete(user);
+        willDoNothing().given(basketRepository).delete(basket);
 
         // Act
         userService.deleteUser(userId);

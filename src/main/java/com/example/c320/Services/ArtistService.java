@@ -35,5 +35,19 @@ public class ArtistService {
         paintingRepository.save(painting);
         return artistRepository.save(artist);
     }
+
+    public void deleteArtist(String artistId) {
+        // Find the artist by ID
+        Artist artist = artistRepository.findById(artistId)
+                .orElseThrow(() -> new NoSuchElementException("Artist not found with ID: " + artistId));
+
+        // Delete all paintings by this artist
+        List<Painting> paintings = artist.getPaintings();
+        paintingRepository.deleteAll(paintings);
+
+        // Delete the artist
+        artistRepository.delete(artist);
+    }
+
     // Additional methods for update and delete
 }

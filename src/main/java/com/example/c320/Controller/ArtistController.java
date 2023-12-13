@@ -2,10 +2,12 @@ package com.example.c320.Controller;
 import com.example.c320.Entities.Painting;
 import com.example.c320.Services.ArtistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.c320.Entities.Artist;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/artist")
@@ -30,10 +32,23 @@ public class ArtistController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    @PostMapping
+    @PostMapping("/create")
     public Artist createArtist(@RequestBody Artist artist) {
         return artistService.createArtist(artist);
     }
+
+    @DeleteMapping("delete/{artistId}")
+    public ResponseEntity<?> deleteArtist(@PathVariable String artistId) {
+        try {
+            artistService.deleteArtist(artistId);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // Additional endpoints for update and delete
 
     @PostMapping("/{artistId}/add")
