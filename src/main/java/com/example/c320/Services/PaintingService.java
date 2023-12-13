@@ -69,6 +69,33 @@ public class PaintingService {
 
         return painting;
     }
+    public void deletePainting(String paintingId) {
+        // Find the painting
+        Painting painting = paintingRepository.findById(paintingId)
+                .orElseThrow(() -> new NoSuchElementException("Painting not found with ID: " + paintingId));
+
+        // Remove painting from artist's collection
+        Artist artist = artistRepository.findByPaintingsId(paintingId);
+        artist.getPaintings().removeIf(p -> p.getId().equals(paintingId));
+        artistRepository.save(artist);
+
+        // Remove painting from all baskets and update users
+        List<Basket> baskets = basketRepository.findAllByPaintingsId(paintingId);
+        for (Basket basket : baskets) {
+            List<Painting> paintings = basket.getPaintings();
+            paintings.removeIf(p -> p.getId().equals(paintingId));
+            basket.setPaintings(paintings);
+            basketRepository.save(basket);
+
+            //We also need to update the users that is the owner of this basket
+            User user = userRepository.findById(basket.getUserID()).get();
+            user.setBasket(basket);
+            userRepository.save(user);
+        }
+        // Delete the painting
+        paintingRepository.delete(painting);
+    }
+
 
 
     // Additional methods for update and delete

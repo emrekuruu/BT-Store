@@ -25,6 +25,19 @@ public class PaintingController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("/delete/{paintingId}")
+    public ResponseEntity<?> deletePainting(@PathVariable String paintingId) {
+        try {
+            paintingService.deletePainting(paintingId);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @PutMapping("/update/{paintingId}")
     public ResponseEntity<Painting> updatePainting(@PathVariable String paintingId, @RequestBody Painting paintingData) {
         try {

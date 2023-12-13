@@ -97,6 +97,7 @@ public class PaintingServiceTest {
         List<Painting> basketPaintings = new ArrayList<>();
         basketPaintings.add(originalPainting);
         basket.setPaintings(basketPaintings);
+        double total = basket.getTotal();
 
         User user = new User();
         user.setBasket(basket);
@@ -130,6 +131,41 @@ public class PaintingServiceTest {
         Painting updatedUserBasketPainting = updatedUser.getBasket().getPaintings().get(0);
         assertEquals(updatedData.getName(), updatedUserBasketPainting.getName());
         assertEquals(updatedData.getDescription(), updatedUserBasketPainting.getDescription());
+        assertEquals(total-originalPainting.getPrice(),basket.getTotal());
+    }
+
+    @Test
+    public void deletePainting_Success() {
+        // Arrange
+        String paintingId = "existingPainting";
+        Painting painting = new Painting();
+        painting.setId(paintingId);
+
+        Artist artist = new Artist();
+        artist.getPaintings().add(painting);
+
+        Basket basket = new Basket();
+        basket.getPaintings().add(painting);
+        double total = basket.getTotal();
+
+        User user = new User();
+        user.setBasket(basket);
+
+        given(paintingRepository.findById(paintingId)).willReturn(Optional.of(painting));
+        willDoNothing().given(paintingRepository).delete(painting);
+        given(artistRepository.findByPaintingsId(paintingId)).willReturn(artist);
+        given(basketRepository.findAllByPaintingsId(paintingId)).willReturn(Collections.singletonList(basket));
+        given(userRepository.findById(basket.getUserID())).willReturn(Optional.of(user));
+
+        // Act
+        paintingService.deletePainting(paintingId);
+
+        // Assert
+        verify(paintingRepository, times(1)).delete(painting);
+        verify(artistRepository, times(1)).save(artist);
+        verify(basketRepository, times(1)).save(basket);
+        verify(userRepository, times(1)).save(user);
+        assertEquals(total-painting.getPrice(),basket.getTotal());
     }
 
 
