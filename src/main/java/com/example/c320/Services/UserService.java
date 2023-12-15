@@ -30,6 +30,8 @@ public class UserService {
     @Autowired
     private PurchaseRepository purchaseRepository;
 
+    @Autowired
+    private PaintingService paintingService;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -118,6 +120,10 @@ public class UserService {
 
         if (basket.getPaintings().isEmpty()) {
             throw new IllegalStateException("Basket is empty.");
+        }
+        List<Painting> paintings = basket.getPaintings();
+        for(Painting p: paintings){
+            paintingService.deletePainting(p.getId());
         }
         // Record the purchase
         Purchase purchase = new Purchase();

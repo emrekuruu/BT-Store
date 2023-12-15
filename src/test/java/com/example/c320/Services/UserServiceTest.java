@@ -30,8 +30,12 @@ public class UserServiceTest {
     private BasketRepository basketRepository;
     @Mock
     private PurchaseRepository purchaseRepository;
+
+    @Mock
+    private PaintingService paintingService;
     @InjectMocks
     private UserService userService;
+
 
     @Test
     public void getUserById_WhenUserExists() {
@@ -249,8 +253,8 @@ public class UserServiceTest {
         List<Painting> paintings = basket.getPaintings();
 
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
-        given(basketRepository.save(any(Basket.class))).willReturn(basket);
-        given(userRepository.save(any(User.class))).willReturn(user);
+        given(basketRepository.save(basket)).willReturn(basket);
+        given(userRepository.save(user)).willReturn(user);
 
         // Act
         Purchase purchase = userService.purchase(userId);
