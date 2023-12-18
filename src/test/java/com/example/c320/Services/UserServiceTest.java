@@ -63,6 +63,53 @@ public class UserServiceTest {
         assertFalse(result.isPresent(), "User should not be present");
     }
 
+    @Test
+    public void isUserRegistered_WhenUserExistsWithCorrectPassword() {
+        // Arrange
+        String username = "testuser";
+        String password = "testpass";
+        User foundUser = new User();
+        foundUser.setUsername(username);
+        foundUser.setPassword(password);
+        given(userRepository.findByUsername(username)).willReturn(Optional.of(foundUser));
+
+        // Act
+        boolean result = userService.isUserRegistered(username, password);
+
+        // Assert
+        assertTrue(result, "User should be registered");
+    }
+
+    @Test
+    public void isUserRegistered_WhenUserExistsWithIncorrectPassword() {
+        // Arrange
+        String username = "testuser";
+        String password = "testpass";
+        User foundUser = new User();
+        foundUser.setUsername(username);
+        foundUser.setPassword("wrongpass");
+        given(userRepository.findByUsername(username)).willReturn(Optional.of(foundUser));
+
+        // Act
+        boolean result = userService.isUserRegistered(username, password);
+
+        // Assert
+        assertFalse(result, "User should not be registered with incorrect password");
+    }
+
+    @Test
+    public void isUserRegistered_WhenUserDoesNotExist() {
+        // Arrange
+        String username = "nonexistent";
+        String password = "password";
+        given(userRepository.findByUsername(username)).willReturn(Optional.empty());
+
+        // Act
+        boolean result = userService.isUserRegistered(username, password);
+
+        // Assert
+        assertFalse(result, "Non-existent user should not be registered");
+    }
 
     @Test
     public void addPaintingToBasket_Success() {

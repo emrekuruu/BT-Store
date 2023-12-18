@@ -8,7 +8,6 @@ public class C320Application {
     public static void main(String[] args) {
         SpringApplication.run(C320Application.class, args);
     }
-
 }
 
 

@@ -12,4 +12,6 @@ public interface ArtistRepository extends MongoRepository<Artist, String> {
     Optional<Artist> findByName(String name);
 
     Artist findByPaintingsId(String paintingId);
+
+    Optional<Artist> findByUsername(String username);
 }
