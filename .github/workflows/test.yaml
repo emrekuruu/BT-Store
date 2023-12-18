@@ -35,3 +35,5 @@ jobs:
 
     - name: Run Tests in Docker
       run: docker run myapp:test
+      env:
+        SPRING_DATA_MONGODB_AUTO_INDEX_CREATION: false
