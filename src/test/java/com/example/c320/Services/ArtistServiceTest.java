@@ -116,7 +116,6 @@ public class ArtistServiceTest {
         foundArtist.setUsername(username);
         foundArtist.setPassword("wrongpass");
         given(artistRepository.findByUsername(username)).willReturn(Optional.of(foundArtist));
-
         // Act
         boolean result = artistService.isArtistRegistered(username, password);
 
