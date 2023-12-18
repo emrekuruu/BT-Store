@@ -2,6 +2,7 @@ package com.example.c320.Services;
 import com.example.c320.Entities.Artist;
 import com.example.c320.Entities.Painting;
 import com.example.c320.Entities.Artist;
+import com.example.c320.Entities.Artist;
 import com.example.c320.Repositories.ArtistRepository;
 import com.example.c320.Repositories.PaintingRepository;
 import org.junit.jupiter.api.Test;
@@ -87,6 +88,54 @@ public class ArtistServiceTest {
         });
 
         verify(artistRepository, never()).delete(any(Artist.class));
+    }
+
+    @Test
+    public void isArtistRegistered_WhenArtistExistsWithCorrectPassword() {
+        // Arrange
+        String artistname = "testartist";
+        String password = "testpass";
+        Artist foundArtist = new Artist();
+        foundArtist.setUsername(artistname);
+        foundArtist.setPassword(password);
+        given(artistRepository.findByUsername(artistname)).willReturn(Optional.of(foundArtist));
+
+        // Act
+        boolean result = artistService.isArtistRegistered(artistname, password);
+
+        // Assert
+        assertTrue(result, "Artist should be registered");
+    }
+
+    @Test
+    public void isArtistRegistered_WhenArtistExistsWithIncorrectPassword() {
+        // Arrange
+        String username = "testartist";
+        String password = "testpass";
+        Artist foundArtist = new Artist();
+        foundArtist.setUsername(username);
+        foundArtist.setPassword("wrongpass");
+        given(artistRepository.findByUsername(username)).willReturn(Optional.of(foundArtist));
+
+        // Act
+        boolean result = artistService.isArtistRegistered(username, password);
+
+        // Assert
+        assertFalse(result, "Artist should not be registered with incorrect password");
+    }
+
+    @Test
+    public void isArtistRegistered_WhenArtistDoesNotExist() {
+        // Arrange
+        String username = "nonexistent";
+        String password = "password";
+        given(artistRepository.findByUsername(username)).willReturn(Optional.empty());
+
+        // Act
+        boolean result = artistService.isArtistRegistered(username, password);
+
+        // Assert
+        assertFalse(result, "Non-existent artist should not be registered");
     }
 
 }
