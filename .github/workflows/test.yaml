@@ -10,29 +10,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mongodb:
-        image: mongo:latest
-        options: >-
-          --health-cmd "mongo --eval 'db.runCommand({ping: 1})'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-
     steps:
-    - name: Check out repository code
-      uses: actions/checkout@v3
-      
+    - uses: actions/checkout@v3
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
-      
+
     - name: Cache Docker layers
       uses: actions/cache@v2
       with:
         path: /tmp/.buildx-cache
         key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: ${{ runner.os }}-buildx-
-      
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
     - name: Build Docker Image
       uses: docker/build-push-action@v2
       with:
@@ -40,25 +31,8 @@ jobs:
         load: true
         tags: myapp:test
         cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache-new
-      
-    - name: Start up the application with docker-compose
-      run: docker-compose -f docker-compose.yaml up -d
-      
-    - name: Wait for MongoDB to be ready
-      run: |
-        until docker-compose -f docker-compose.yaml exec -T mongodb mongo --eval "print('waited for a connection')"
-        do
-          echo "Waiting for MongoDB..."
-          sleep 2
-        done
+        cache-to: type=local,dest=/tmp/.buildx-cache
 
     - name: Run Tests in Docker
-      run: |
-        docker-compose -f docker-compose.yaml run app mvn test
-      env:
-        SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/bt-store
-
-    - name: Shutdown Docker Compose Services
-      run: docker-compose -f docker-compose.yaml down
+      run: docker run myapp:test
 
