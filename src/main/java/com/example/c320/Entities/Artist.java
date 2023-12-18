@@ -1,5 +1,6 @@
 package com.example.c320.Entities;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,11 +15,22 @@ public class Artist {
         private String id;
         String name;
         String surname;
+        @Indexed(unique = true)
         String username;
         String password;
+        @Indexed(unique = true)
+        private String email;
         List<Painting> paintings = new ArrayList<Painting>();
 
     public Artist() {
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getId() {
