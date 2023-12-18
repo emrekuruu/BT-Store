@@ -1,40 +1,32 @@
-name: Run Unit Tests
+name: Unit Tests
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - main  # Adjust the branch as needed
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - "27017:27017"
+
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'  # Adjust the Java version as needed
 
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
+      - name: Build and Test
+        run: |
+          mvn clean install -DskipTests=true
+          mvn test -Dspring.data.mongodb.uri=mongodb://mongodb:27017/BT-Store
 
-    - name: Build Docker Image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        load: true
-        tags: myapp:test
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache
-
-    - name: Run Tests in Docker
-      run: docker run myapp:test
-      env:
-        SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/bt-store
 
