@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    volumes:
+      - .:/usr/src/myapp
+      - ~/.m2:/root/.m2
