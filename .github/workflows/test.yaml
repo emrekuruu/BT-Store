@@ -10,6 +10,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
     steps:
     - uses: actions/checkout@v3
 
@@ -34,6 +40,7 @@ jobs:
         cache-to: type=local,dest=/tmp/.buildx-cache
 
     - name: Run Tests in Docker
-      run: docker run myapp:test
+      run: |
+        docker-compose -f docker-compose.yml run app mvn test
       env:
-        SPRING_DATA_MONGODB_AUTO_INDEX_CREATION: false
+        SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/bt-store
