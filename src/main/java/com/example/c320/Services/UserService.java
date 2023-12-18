@@ -41,6 +41,16 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public boolean isUserRegistered(String username, String password) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            // Compare the plain text passwords directly
+            return user.getPassword().equals(password);
+        }
+        return false;
+    }
+
     public User createUser(User user) {
         userRepository.save(user);
         Basket basket = new Basket();
