@@ -41,6 +41,6 @@ jobs:
 
     - name: Run Tests in Docker
       run: |
-        docker-compose -f docker-compose.yml run app mvn test
+        docker-compose -f docker-compose.yaml run app mvn test
       env:
         SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/bt-store
