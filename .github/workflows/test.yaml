@@ -35,4 +35,6 @@ jobs:
 
     - name: Run Tests in Docker
       run: docker run myapp:test
+      env:
+        SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/bt-store
 
