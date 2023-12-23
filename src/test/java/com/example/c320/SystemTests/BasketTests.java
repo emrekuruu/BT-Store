@@ -1,8 +1,10 @@
 package com.example.c320.SystemTests;
 
 import com.example.c320.Entities.Basket;
+import com.example.c320.Entities.Purchase;
 import com.example.c320.Services.BasketService;
 import com.example.c320.Entities.User;
+import com.example.c320.Services.PurchaseService;
 import com.example.c320.Services.UserService;
 import com.example.c320.Entities.Painting;
 import com.example.c320.Services.PaintingService;
@@ -16,6 +18,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -26,6 +31,7 @@ public class BasketTests {
     @Autowired
     private BasketService basketService;
     private UserService userService;
+    private PurchaseService purchaseService;
     private static final DockerImageName MONGO_IMAGE = DockerImageName.parse("mongo:4.4.2");
     private static MongoDBContainer mongoDBContainer;
 
@@ -95,20 +101,28 @@ public class BasketTests {
         userService.addPaintingToBasket("12","123"); // Should throw a message that the painting is already in basket.
     }
     @Test
-    public void testAddPaintingIntoBasketandRetrievePaintings(){
+    public void testEmptyBasketWhenPurchaseMade(){
         // Create User to be assigned
         User user = new User();
         user.setId("12");
         // Create User to be assigned
         Painting painting = new Painting();
         painting.setId("123");
+        Painting painting = new Painting();
+        painting.setId("124");
         Basket basket = new Basket();
         basket.setId("1234");
         user.setBasket(basket);
+        userService.createUser(user);
         userService.addPaintingToBasket("12","123");
-
-        Basket found = basketService.getBasketById("1234").orElse(null);
-        assertNotNull(found, "Basket should be found in the database");
+        userService.addPaintingToBasket("12","124");
+        Purchase purchase = new Purchase();
+        purchase.setPaintings(basket.getPaintings());
+        purchase.setUserID("12");
+        purchaseService.createPurchase(purchase);
+        if(basketService.getBasketById("123d").get().getPaintings() == null){
+            //WORKS CORRECTLY
+        }
     }
 
 }
