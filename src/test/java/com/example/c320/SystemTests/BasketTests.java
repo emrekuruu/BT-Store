@@ -1,5 +1,4 @@
 package com.example.c320.SystemTests;
-
 import com.example.c320.Entities.Basket;
 import com.example.c320.Entities.Purchase;
 import com.example.c320.Services.BasketService;
@@ -101,15 +100,15 @@ public class BasketTests {
         userService.addPaintingToBasket("12","123"); // Should throw a message that the painting is already in basket.
     }
     @Test
-    public void testEmptyBasketWhenPurchaseMade(){
+    public void testEmptyBasketWhenPurchaseMade(){ // To test if the basket is empty after purchase
         // Create User to be assigned
         User user = new User();
         user.setId("12");
         // Create User to be assigned
         Painting painting = new Painting();
         painting.setId("123");
-        Painting painting = new Painting();
-        painting.setId("124");
+        Painting painting2 = new Painting();
+        painting2.setId("124");
         Basket basket = new Basket();
         basket.setId("1234");
         user.setBasket(basket);
@@ -120,11 +119,37 @@ public class BasketTests {
         purchase.setPaintings(basket.getPaintings());
         purchase.setUserID("12");
         purchaseService.createPurchase(purchase);
-        if(basketService.getBasketById("123d").get().getPaintings() == null){
+        if(basketService.getBasketById("1234").get().getPaintings() == null){
             //WORKS CORRECTLY
         }
     }
-
+    @Test
+    public void testIfTotalCalculatedCorrectly(){ // To test if total price is calculated correctly
+        // Create User to be assigned
+        User user = new User();
+        user.setId("12");
+        // Create User to be assigned
+        Painting painting = new Painting();
+        painting.setId("123");
+        painting.setPrice(10.);
+        Painting painting2 = new Painting();
+        painting2.setId("124");
+        painting2.setPrice(20.);
+        Painting painting3 = new Painting();
+        painting3.setId("125");
+        painting3.setPrice(40.);
+        Basket basket = new Basket();
+        basket.setId("1234");
+        user.setBasket(basket);
+        userService.createUser(user);
+        userService.addPaintingToBasket("12","123");
+        userService.addPaintingToBasket("12","124");
+        userService.addPaintingToBasket("12","125");
+        userService.removePaintingFromBasket("12","124");
+        if(basketService.getBasketById("1234").get().getTotal() == 50.){
+            //WORKS CORRECTLY
+        }
+    }
 }
 
 
