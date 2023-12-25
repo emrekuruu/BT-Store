@@ -90,6 +90,4 @@ public class ArtistTests {
         //Check if found == artist
     }
 
-
-
 }

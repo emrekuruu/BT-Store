@@ -1,6 +1,14 @@
 package com.example.c320.SystemTests;
-import com.example.c320.Entities.*;
-import com.example.c320.Services.*;
+import com.example.c320.Entities.Basket;
+import com.example.c320.Entities.Purchase;
+import com.example.c320.Services.BasketService;
+import com.example.c320.Entities.User;
+import com.example.c320.Services.PurchaseService;
+import com.example.c320.Services.UserService;
+import com.example.c320.Entities.Painting;
+import com.example.c320.Services.PaintingService;
+import com.example.c320.Entities.Artist;
+import com.example.c320.Services.ArtistService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +20,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 public class PurchaseTests {

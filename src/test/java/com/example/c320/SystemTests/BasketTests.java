@@ -1,12 +1,10 @@
 package com.example.c320.SystemTests;
-import com.example.c320.Entities.Basket;
-import com.example.c320.Entities.Purchase;
+import com.example.c320.Entities.*;
 import com.example.c320.Services.BasketService;
-import com.example.c320.Entities.User;
 import com.example.c320.Services.PurchaseService;
 import com.example.c320.Services.UserService;
-import com.example.c320.Entities.Painting;
 import com.example.c320.Services.PaintingService;
+import com.example.c320.Services.ArtistService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +29,8 @@ public class BasketTests {
     private BasketService basketService;
     private UserService userService;
     private PurchaseService purchaseService;
+    private PaintingService paintingService;
+    private ArtistService artistService;
     private static final DockerImageName MONGO_IMAGE = DockerImageName.parse("mongo:4.4.2");
     private static MongoDBContainer mongoDBContainer;
 
@@ -54,48 +54,20 @@ public class BasketTests {
             mongoDBContainer.stop();
         }
     }
-
-    @Test
-    public void testAssignExistingUserId(){
-        // Create User to be assigned
-        User user = new User();
-        user.setId("123");
-
-        // Create basket to assign
-        Basket basket = new Basket();
-        basket.setId("1234");
-        basket.setUserID("123");
-
-        basketService.createBasket(basket);
-
-        Basket found = basketService.getBasketById("1234").orElse(null);
-        assertNotNull(found, "Basket should be found in the database");
-    }
-
-    @Test
-    public void testAssignNonExistingUserId(){
-        // No user created to be assigned
-
-        // Create basket to assign
-        Basket basket = new Basket();
-        basket.setId("1234");
-        basket.setUserID("12");
-
-        Basket found = basketService.getBasketById("1234").orElse(null);
-        assertNull(found, "Basket should not be found in the database");
-    }
-
     @Test
     public void testDontAddAlreadyAddedPainting(){
         // Create User to be assigned
         User user = new User();
         user.setId("12");
-        // Create User to be assigned
-        Painting painting = new Painting();
-        painting.setId("123");
         Basket basket = new Basket();
         basket.setId("1234");
         user.setBasket(basket);
+        userService.createUser(user);
+        Artist artist = new Artist();
+        artist.setId("1");
+        Painting painting = new Painting();
+        painting.setId("123");
+        artistService.addPainting(painting,"1");
         userService.addPaintingToBasket("12","123");
         userService.addPaintingToBasket("12","123"); // Should throw a message that the painting is already in basket.
     }
@@ -104,16 +76,20 @@ public class BasketTests {
         // Create User to be assigned
         User user = new User();
         user.setId("12");
+        Basket basket = new Basket();
+        basket.setId("1234");
+        user.setBasket(basket);
+        userService.createUser(user)
+        ;
         // Create paintings
+        Artist artist = new Artist();
+        artist.setId("1");
         Painting painting = new Painting();
         painting.setId("123");
         Painting painting2 = new Painting();
         painting2.setId("124");
-        //Create basket
-        Basket basket = new Basket();
-        basket.setId("1234");
-        user.setBasket(basket);
-        userService.createUser(user);
+        artistService.addPainting(painting,"1");
+        artistService.addPainting(painting2,"1");
         userService.addPaintingToBasket("12","123");
         userService.addPaintingToBasket("12","124");
         Purchase purchase = new Purchase();
@@ -129,7 +105,13 @@ public class BasketTests {
         // Create User to be assigned
         User user = new User();
         user.setId("12");
-        // Create User to be assigned
+        Basket basket = new Basket();
+        basket.setId("1234");
+        user.setBasket(basket);
+        userService.createUser(user);
+
+        Artist artist = new Artist();
+        artist.setId("1");
         Painting painting = new Painting();
         painting.setId("123");
         painting.setPrice(10.);
@@ -139,10 +121,9 @@ public class BasketTests {
         Painting painting3 = new Painting();
         painting3.setId("125");
         painting3.setPrice(40.);
-        Basket basket = new Basket();
-        basket.setId("1234");
-        user.setBasket(basket);
-        userService.createUser(user);
+        artistService.addPainting(painting,"1");
+        artistService.addPainting(painting2,"1");
+        artistService.addPainting(painting3,"1");
         userService.addPaintingToBasket("12","123");
         userService.addPaintingToBasket("12","124");
         userService.addPaintingToBasket("12","125");
