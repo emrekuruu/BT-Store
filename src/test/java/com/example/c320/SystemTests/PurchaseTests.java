@@ -1,14 +1,6 @@
 package com.example.c320.SystemTests;
-import com.example.c320.Entities.Basket;
-import com.example.c320.Entities.Purchase;
-import com.example.c320.Services.BasketService;
-import com.example.c320.Entities.User;
-import com.example.c320.Services.PurchaseService;
-import com.example.c320.Services.UserService;
-import com.example.c320.Entities.Painting;
-import com.example.c320.Services.PaintingService;
-import com.example.c320.Entities.Artist;
-import com.example.c320.Services.ArtistService;
+import com.example.c320.Entities.*;
+import com.example.c320.Services.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,20 +12,21 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @ActiveProfiles("test")
-public class PaintingTests {
+public class PurchaseTests {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private PaintingService paintingService;
+    private BasketService basketService;
+    private UserService userService;
+    private PurchaseService purchaseService;
     private ArtistService artistService;
+    private PaintingService paintingService;
     private static final DockerImageName MONGO_IMAGE = DockerImageName.parse("mongo:4.4.2");
     private static MongoDBContainer mongoDBContainer;
+
+
 
     @BeforeAll
     static void setup() {
@@ -55,22 +48,33 @@ public class PaintingTests {
     }
 
     @Test
-    public void testIfPriceEditedCorrectly(){
+    public void testIfPurchasedPaintingsRemoved(){// To check if the purchased paintings are unable for other users when someone else purchase them
+        // Create User to be assigned
+        User user = new User();
+        user.setId("12");
+        //Create Artists
+        Artist artist = new Artist();
+        artist.setId("1");
+        // Create paintings
         Painting painting = new Painting();
         painting.setId("123");
-        painting.setPrice(10.);
-        painting.setName("First Painting");
-        Artist artist = new Artist();
-        artist.setId("12");
-        artistService.addPainting(painting,"12");
-        Painting uptadePainting = new Painting();
-        uptadePainting.setPrice(20.);
-        uptadePainting.setId("124");
-        uptadePainting.setName("updated");
-        paintingService.updatePainting("123",uptadePainting);
-        if(paintingService.getPaintingById("123").get().getPrice() == 20.){
-            //Works corretly
-        }
+        Painting painting2 = new Painting();
+        painting2.setId("124");
+        artistService.addPainting(painting,"1");
+        artistService.addPainting(painting2,"1");
+        //Create basket
+        Basket basket = new Basket();
+        basket.setId("1234");
+        user.setBasket(basket);
+        userService.createUser(user);
+        userService.addPaintingToBasket("12","123");
+        userService.addPaintingToBasket("12","124");
+        Purchase purchase = new Purchase();
+        purchase.setPaintings(basket.getPaintings());
+        purchase.setUserID("12");
+        purchaseService.createPurchase(purchase);
+        Painting found1 =  paintingService.getPaintingById("123").get();
+        Painting found2 =  paintingService.getPaintingById("124").get();
+        //CHECK IF THEY ARE EXIST
     }
-
 }

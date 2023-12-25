@@ -104,11 +104,12 @@ public class BasketTests {
         // Create User to be assigned
         User user = new User();
         user.setId("12");
-        // Create User to be assigned
+        // Create paintings
         Painting painting = new Painting();
         painting.setId("123");
         Painting painting2 = new Painting();
         painting2.setId("124");
+        //Create basket
         Basket basket = new Basket();
         basket.setId("1234");
         user.setBasket(basket);

@@ -69,4 +69,27 @@ public class ArtistTests {
         Artist found = artistService.getArtistById("123").orElse(null);
         assertNull(found, "Artist should be found in the database");
     }
+
+    @Test
+    public void testFilterbyNameExistingArtist(){
+        Artist artist = new Artist();
+        artist.setId("123");
+        artist.setName("Picasso");
+        artistService.createArtist(artist);
+        Artist found = artistService.getArtistByName("Picasso").orElse(null);
+        //Check if found == artist
+    }
+
+    @Test
+    public void testFilterbyIdExistingArtist(){
+        Artist artist = new Artist();
+        artist.setId("123");
+        artist.setName("Picasso");
+        artistService.createArtist(artist);
+        Artist found = artistService.getArtistById("123").orElse(null);
+        //Check if found == artist
+    }
+
+
+
 }
