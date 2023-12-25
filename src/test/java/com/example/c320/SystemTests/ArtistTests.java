@@ -1,5 +1,12 @@
 package com.example.c320.SystemTests;
 
+import com.example.c320.Entities.Purchase;
+import com.example.c320.Services.BasketService;
+import com.example.c320.Entities.User;
+import com.example.c320.Services.PurchaseService;
+import com.example.c320.Services.UserService;
+import com.example.c320.Entities.Painting;
+import com.example.c320.Services.PaintingService;
 import com.example.c320.Entities.Artist;
 import com.example.c320.Services.ArtistService;
 import org.junit.jupiter.api.AfterAll;
@@ -22,7 +29,11 @@ public class ArtistTests {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
+    private BasketService basketService;
+    private UserService userService;
+    private PurchaseService purchaseService;
     private ArtistService artistService;
+    private PaintingService paintingService;
     private static final DockerImageName MONGO_IMAGE = DockerImageName.parse("mongo:4.4.2");
     private static MongoDBContainer mongoDBContainer;
 
@@ -90,4 +101,19 @@ public class ArtistTests {
         //Check if found == artist
     }
 
+    public void testIfDeletedArtistsPaintingsDeleted(){
+        //Create Artists
+        Artist artist = new Artist();
+        artist.setId("1");
+        // Create paintings
+        Painting painting = new Painting();
+        painting.setId("123");
+        Painting painting2 = new Painting();
+        painting2.setId("124");
+        artistService.addPainting(painting,"1");
+        artistService.addPainting(painting2,"1");
+        artistService.deleteArtist("1");
+        Painting found = paintingService.getPaintingById("123").orElse(null);
+        Painting found2 = paintingService.getPaintingById("124").orElse(null);
+    }
 }
