@@ -31,7 +31,11 @@ public class UserTests {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
+    private BasketService basketService;
+    private UserService userService;
+    private PurchaseService purchaseService;
     private ArtistService artistService;
+    private PaintingService paintingService;
     private static final DockerImageName MONGO_IMAGE = DockerImageName.parse("mongo:4.4.2");
     private static MongoDBContainer mongoDBContainer;
 
@@ -54,8 +58,27 @@ public class UserTests {
         }
     }
 
-
-
-
-
+    @Test
+    public void testIfDeletedUsersBasketDeleted(){
+        User user = new User();
+        user.setId("12");
+        Basket basket = new Basket();
+        basket.setId("1234");
+        user.setBasket(basket);
+        userService.createUser(user);
+        //Create Artists
+        Artist artist = new Artist();
+        artist.setId("1");
+        // Create paintings
+        Painting painting = new Painting();
+        painting.setId("123");
+        Painting painting2 = new Painting();
+        painting2.setId("124");
+        artistService.addPainting(painting,"1");
+        artistService.addPainting(painting2,"1");
+        userService.addPaintingToBasket("12","123");
+        userService.addPaintingToBasket("12","124");
+        userService.deleteUser("12");
+        Basket found =  basketService.getBasketById("1234").orElse(null);
+    }
 }

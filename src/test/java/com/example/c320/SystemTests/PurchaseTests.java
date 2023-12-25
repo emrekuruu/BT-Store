@@ -63,6 +63,10 @@ public class PurchaseTests {
         // Create User to be assigned
         User user = new User();
         user.setId("12");
+        Basket basket = new Basket();
+        basket.setId("1234");
+        user.setBasket(basket);
+        userService.createUser(user);
         //Create Artists
         Artist artist = new Artist();
         artist.setId("1");
@@ -74,10 +78,6 @@ public class PurchaseTests {
         artistService.addPainting(painting,"1");
         artistService.addPainting(painting2,"1");
         //Create basket
-        Basket basket = new Basket();
-        basket.setId("1234");
-        user.setBasket(basket);
-        userService.createUser(user);
         userService.addPaintingToBasket("12","123");
         userService.addPaintingToBasket("12","124");
         Purchase purchase = new Purchase();
