@@ -9,8 +9,6 @@ public class Painting {
 
     @Id
     private String id;
-
-    @Indexed(unique = true)
     String name;
     String description;
     String artistID;
