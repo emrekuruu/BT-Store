@@ -1,8 +1,5 @@
 package com.example.c320.Services;
-import com.example.c320.Entities.Basket;
-import com.example.c320.Entities.Painting;
-import com.example.c320.Entities.Purchase;
-import com.example.c320.Entities.User;
+import com.example.c320.Entities.*;
 import com.example.c320.Repositories.PaintingRepository;
 import com.example.c320.Repositories.PurchaseRepository;
 import com.example.c320.Repositories.UserRepository;
@@ -59,6 +56,7 @@ public class UserService {
         basketRepository.save(basket);
         return userRepository.save(user);
     }
+    public Optional<User> getUserByEmail(String email) { return userRepository.findByEmail(email); }
 
     public User addPaintingToBasket(String userId, String paintingId) {
         // Retrieve the user and painting as before

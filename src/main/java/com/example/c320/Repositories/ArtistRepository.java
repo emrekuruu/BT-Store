@@ -11,6 +11,9 @@ public interface ArtistRepository extends MongoRepository<Artist, String> {
     @Query("{ 'name' : ?0 }")
     Optional<Artist> findByName(String name);
 
+    @Query("{ 'email' : ?0 }")
+    Optional<Artist> findByEmail(String email);
+
     Artist findByPaintingsId(String paintingId);
 
     Optional<Artist> findByUsername(String username);
