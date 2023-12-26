@@ -23,6 +23,7 @@ public class ArtistService {
     }
     public Optional<Artist> getArtistById(String id) { return artistRepository.findById(id); }
     public Optional<Artist> getArtistByName(String name) { return artistRepository.findByName(name); }
+    public Optional<Artist> getArtistByEmail(String email) { return artistRepository.findByEmail(email); }
     public Artist createArtist(Artist artist) {
         return artistRepository.save(artist);
     }

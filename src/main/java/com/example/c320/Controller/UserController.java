@@ -1,4 +1,5 @@
 package com.example.c320.Controller;
+import com.example.c320.Entities.User;
 import com.example.c320.Entities.Purchase;
 import com.example.c320.Entities.User;
 import com.example.c320.Services.UserService;
@@ -28,6 +29,13 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        return userService.getUserByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/create")
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
