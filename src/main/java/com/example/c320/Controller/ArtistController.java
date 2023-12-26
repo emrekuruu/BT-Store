@@ -32,6 +32,13 @@ public class ArtistController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Artist> getArtistByEmail(@PathVariable String email) {
+        return artistService.getArtistByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/create")
     public Artist createArtist(@RequestBody Artist artist) {
         return artistService.createArtist(artist);

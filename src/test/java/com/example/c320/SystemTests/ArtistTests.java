@@ -47,10 +47,11 @@ public class ArtistTests {
 
     @Test
     public void testAddAndRetrieveArtist() {
+        
         Artist artist = new Artist();
         artist.setId("123");
 
-        // Save the artist using the repository
+        // Save the artist
         artistService.createArtist(artist);
 
         // Retrieve and verify the artist
@@ -60,13 +61,13 @@ public class ArtistTests {
 
     @Test
     public void testAddAndRetrieveNonExistingArtist() {
-        // Retrieve and verify the artist
+
         Artist artist = new Artist();
         artist.setId("123");
 
         // Dont add it to the database
 
         Artist found = artistService.getArtistById("123").orElse(null);
-        assertNull(found, "Artist should be found in the database");
+        assertNull(found, "Artist should not be found in the database");
     }
 }
