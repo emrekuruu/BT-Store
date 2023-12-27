@@ -52,12 +52,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
-        String userId = userService.isUserRegistered(username, password);
-        if (userId != null) {
-            // Adjust the response to include the user ID or other relevant information
-            return ResponseEntity.ok("User ID: " + userId);
+        User user = userService.isUserRegistered(username, password);
+        if (user != null) {
+            return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
