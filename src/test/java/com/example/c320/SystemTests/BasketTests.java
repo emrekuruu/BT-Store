@@ -16,9 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -76,7 +73,7 @@ public class BasketTests {
         // Create User to be assigned
         User user = new User();
         user.setId("12");
-<<<<<<< HEAD
+
         Basket basket = new Basket();
         basket.setId("1234");
         user.setBasket(basket);
@@ -85,23 +82,16 @@ public class BasketTests {
         // Create paintings
         Artist artist = new Artist();
         artist.setId("1");
-=======
+
         // Create paintings
->>>>>>> df0af04 (TestIfPurchasedPaintingsRemoved and Filtering tests for artist added)
         Painting painting = new Painting();
         painting.setId("123");
         Painting painting2 = new Painting();
         painting2.setId("124");
-<<<<<<< HEAD
+
         artistService.addPainting(painting,"1");
         artistService.addPainting(painting2,"1");
-=======
-        //Create basket
-        Basket basket = new Basket();
-        basket.setId("1234");
-        user.setBasket(basket);
-        userService.createUser(user);
->>>>>>> df0af04 (TestIfPurchasedPaintingsRemoved and Filtering tests for artist added)
+
         userService.addPaintingToBasket("12","123");
         userService.addPaintingToBasket("12","124");
         Purchase purchase = new Purchase();
