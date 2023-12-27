@@ -101,6 +101,7 @@ public class ArtistTests {
         //Check if found == artist
     }
 
+<<<<<<< HEAD
     public void testIfDeletedArtistsPaintingsDeleted(){
         //Create Artists
         Artist artist = new Artist();
@@ -140,4 +141,8 @@ public class ArtistTests {
         List<Painting> found =  basketService.getBasketById("1234").get().getPaintings();
 
     }
+=======
+
+
+>>>>>>> df0af04 (TestIfPurchasedPaintingsRemoved and Filtering tests for artist added)
 }

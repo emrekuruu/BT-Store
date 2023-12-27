@@ -1,4 +1,5 @@
 package com.example.c320.SystemTests;
+<<<<<<< HEAD
 import com.example.c320.Entities.Basket;
 import com.example.c320.Entities.Purchase;
 import com.example.c320.Services.BasketService;
@@ -9,6 +10,10 @@ import com.example.c320.Entities.Painting;
 import com.example.c320.Services.PaintingService;
 import com.example.c320.Entities.Artist;
 import com.example.c320.Services.ArtistService;
+=======
+import com.example.c320.Entities.*;
+import com.example.c320.Services.*;
+>>>>>>> df0af04 (TestIfPurchasedPaintingsRemoved and Filtering tests for artist added)
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,9 +25,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
+<<<<<<< HEAD
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+=======
+>>>>>>> df0af04 (TestIfPurchasedPaintingsRemoved and Filtering tests for artist added)
 @SpringBootTest
 @ActiveProfiles("test")
 public class PurchaseTests {
@@ -63,10 +71,13 @@ public class PurchaseTests {
         // Create User to be assigned
         User user = new User();
         user.setId("12");
+<<<<<<< HEAD
         Basket basket = new Basket();
         basket.setId("1234");
         user.setBasket(basket);
         userService.createUser(user);
+=======
+>>>>>>> df0af04 (TestIfPurchasedPaintingsRemoved and Filtering tests for artist added)
         //Create Artists
         Artist artist = new Artist();
         artist.setId("1");
@@ -78,6 +89,13 @@ public class PurchaseTests {
         artistService.addPainting(painting,"1");
         artistService.addPainting(painting2,"1");
         //Create basket
+<<<<<<< HEAD
+=======
+        Basket basket = new Basket();
+        basket.setId("1234");
+        user.setBasket(basket);
+        userService.createUser(user);
+>>>>>>> df0af04 (TestIfPurchasedPaintingsRemoved and Filtering tests for artist added)
         userService.addPaintingToBasket("12","123");
         userService.addPaintingToBasket("12","124");
         Purchase purchase = new Purchase();
