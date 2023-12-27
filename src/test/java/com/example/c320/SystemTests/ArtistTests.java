@@ -1,6 +1,10 @@
 package com.example.c320.SystemTests;
 
-import com.example.c320.Entities.Artist;
+import com.example.c320.Entities.*;
+import com.example.c320.Services.BasketService;
+import com.example.c320.Services.PurchaseService;
+import com.example.c320.Services.UserService;
+import com.example.c320.Services.PaintingService;
 import com.example.c320.Services.ArtistService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,6 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -22,7 +28,11 @@ public class ArtistTests {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
+    private BasketService basketService;
+    private UserService userService;
+    private PurchaseService purchaseService;
     private ArtistService artistService;
+    private PaintingService paintingService;
     private static final DockerImageName MONGO_IMAGE = DockerImageName.parse("mongo:4.4.2");
     private static MongoDBContainer mongoDBContainer;
 
@@ -70,4 +80,69 @@ public class ArtistTests {
         Artist found = artistService.getArtistById("123").orElse(null);
         assertNull(found, "Artist should not be found in the database");
     }
+
+    @Test
+    public void testFilterbyNameExistingArtist(){
+        Artist artist = new Artist();
+        artist.setId("123");
+        artist.setName("Picasso");
+        artistService.createArtist(artist);
+        Artist found = artistService.getArtistByName("Picasso").orElse(null);
+        //Check if found == artist
+    }
+
+    @Test
+    public void testFilterbyIdExistingArtist(){
+        Artist artist = new Artist();
+        artist.setId("123");
+        artist.setName("Picasso");
+        artistService.createArtist(artist);
+        Artist found = artistService.getArtistById("123").orElse(null);
+        //Check if found == artist
+    }
+
+<<<<<<< HEAD
+    public void testIfDeletedArtistsPaintingsDeleted(){
+        //Create Artists
+        Artist artist = new Artist();
+        artist.setId("1");
+        // Create paintings
+        Painting painting = new Painting();
+        painting.setId("123");
+        Painting painting2 = new Painting();
+        painting2.setId("124");
+        artistService.addPainting(painting,"1");
+        artistService.addPainting(painting2,"1");
+        artistService.deleteArtist("1");
+        Painting found = paintingService.getPaintingById("123").orElse(null);
+        Painting found2 = paintingService.getPaintingById("124").orElse(null);
+    }
+
+    public void testIfDeletedArtistsPaintingsDeletedFromUsersBasket(){
+        User user = new User();
+        user.setId("12");
+        Basket basket = new Basket();
+        basket.setId("1234");
+        user.setBasket(basket);
+        userService.createUser(user);
+        //Create Artists
+        Artist artist = new Artist();
+        artist.setId("1");
+        // Create paintings
+        Painting painting = new Painting();
+        painting.setId("123");
+        Painting painting2 = new Painting();
+        painting2.setId("124");
+        artistService.addPainting(painting,"1");
+        artistService.addPainting(painting2,"1");
+        userService.addPaintingToBasket("12","123");
+        userService.addPaintingToBasket("12","124");
+        artistService.deleteArtist("1");
+        List<Painting> found =  basketService.getBasketById("1234").get().getPaintings();
+
+    }
+=======
+
+
+>>>>>>> df0af04 (TestIfPurchasedPaintingsRemoved and Filtering tests for artist added)
 }
