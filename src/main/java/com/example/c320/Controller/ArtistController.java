@@ -46,13 +46,15 @@ public class ArtistController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginArtist(@RequestParam String username, @RequestParam String password) {
-        boolean isRegistered = artistService.isArtistRegistered(username, password);
-        if (isRegistered) {
-            return ResponseEntity.ok().build();
+        String artistId = artistService.isArtistRegistered(username, password);
+        if (artistId != null) {
+            // Adjust the response to include the artist ID or other relevant information
+            return ResponseEntity.ok("Artist ID: " + artistId);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
     }
+
     @DeleteMapping("delete/{artistId}")
     public ResponseEntity<?> deleteArtist(@PathVariable String artistId) {
         try {
