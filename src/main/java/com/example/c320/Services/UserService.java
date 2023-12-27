@@ -38,14 +38,17 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public boolean isUserRegistered(String username, String password) {
+    public String isUserRegistered(String username, String password) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             // Compare the plain text passwords directly
-            return user.getPassword().equals(password);
+            if (user.getPassword().equals(password)) {
+                // Return the user's ID instead of true
+                return user.getId(); // Assuming getId() returns a String ID
+            }
         }
-        return false;
+        return null; // or another indicator that the user is not registered
     }
 
     public User createUser(User user) {

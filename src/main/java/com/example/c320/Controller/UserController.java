@@ -54,14 +54,14 @@ public class UserController {
     }
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
-        boolean isRegistered = userService.isUserRegistered(username, password);
-        if (isRegistered) {
-            return ResponseEntity.ok().build();
+        String userId = userService.isUserRegistered(username, password);
+        if (userId != null) {
+            // Adjust the response to include the user ID or other relevant information
+            return ResponseEntity.ok("User ID: " + userId);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
     }
-
 
     @PostMapping("/{userId}/basket/add/{paintingId}")
     public ResponseEntity<User> addPaintingToBasket(@PathVariable String userId, @PathVariable String paintingId) {
