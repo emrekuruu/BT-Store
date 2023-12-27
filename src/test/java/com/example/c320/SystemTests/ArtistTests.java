@@ -57,7 +57,7 @@ public class ArtistTests {
 
     @Test
     public void testAddAndRetrieveArtist() {
-        
+
         Artist artist = new Artist();
         artist.setId("123");
 
@@ -82,7 +82,7 @@ public class ArtistTests {
     }
 
     @Test
-    public void testFilterbyNameExistingArtist(){
+    public void testFilterbyNameExistingArtist() {
         Artist artist = new Artist();
         artist.setId("123");
         artist.setName("Picasso");
@@ -92,7 +92,7 @@ public class ArtistTests {
     }
 
     @Test
-    public void testFilterbyIdExistingArtist(){
+    public void testFilterbyIdExistingArtist() {
         Artist artist = new Artist();
         artist.setId("123");
         artist.setName("Picasso");
@@ -101,8 +101,7 @@ public class ArtistTests {
         //Check if found == artist
     }
 
-<<<<<<< HEAD
-    public void testIfDeletedArtistsPaintingsDeleted(){
+    public void testIfDeletedArtistsPaintingsDeleted() {
         //Create Artists
         Artist artist = new Artist();
         artist.setId("1");
@@ -111,14 +110,14 @@ public class ArtistTests {
         painting.setId("123");
         Painting painting2 = new Painting();
         painting2.setId("124");
-        artistService.addPainting(painting,"1");
-        artistService.addPainting(painting2,"1");
+        artistService.addPainting(painting, "1");
+        artistService.addPainting(painting2, "1");
         artistService.deleteArtist("1");
         Painting found = paintingService.getPaintingById("123").orElse(null);
         Painting found2 = paintingService.getPaintingById("124").orElse(null);
     }
 
-    public void testIfDeletedArtistsPaintingsDeletedFromUsersBasket(){
+    public void testIfDeletedArtistsPaintingsDeletedFromUsersBasket() {
         User user = new User();
         user.setId("12");
         Basket basket = new Basket();
@@ -133,16 +132,12 @@ public class ArtistTests {
         painting.setId("123");
         Painting painting2 = new Painting();
         painting2.setId("124");
-        artistService.addPainting(painting,"1");
-        artistService.addPainting(painting2,"1");
-        userService.addPaintingToBasket("12","123");
-        userService.addPaintingToBasket("12","124");
+        artistService.addPainting(painting, "1");
+        artistService.addPainting(painting2, "1");
+        userService.addPaintingToBasket("12", "123");
+        userService.addPaintingToBasket("12", "124");
         artistService.deleteArtist("1");
-        List<Painting> found =  basketService.getBasketById("1234").get().getPaintings();
+        List<Painting> found = basketService.getBasketById("1234").get().getPaintings();
 
     }
-=======
-
-
->>>>>>> df0af04 (TestIfPurchasedPaintingsRemoved and Filtering tests for artist added)
 }
