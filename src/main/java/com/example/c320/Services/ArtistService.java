@@ -51,14 +51,17 @@ public class ArtistService {
         artistRepository.delete(artist);
     }
 
-    public boolean isArtistRegistered(String username, String password) {
+    public String isArtistRegistered(String username, String password) {
         Optional<Artist> artistOpt = artistRepository.findByUsername(username);
         if (artistOpt.isPresent()) {
             Artist artist = artistOpt.get();
             // Compare the plain text passwords directly
-            return artist.getPassword().equals(password);
+            if (artist.getPassword().equals(password)) {
+                // Return the artist's ID instead of true
+                return artist.getId(); // Assuming getId() returns a String ID
+            }
         }
-        return false;
+        return null; // or another indicator that the artist is not registered
     }
 
     // Additional methods for update and delete
