@@ -1,7 +1,6 @@
 package com.example.c320.Services;
 import com.example.c320.Entities.Artist;
 import com.example.c320.Entities.Painting;
-import com.example.c320.Entities.Artist;
 import com.example.c320.Repositories.ArtistRepository;
 import com.example.c320.Repositories.PaintingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,17 +50,15 @@ public class ArtistService {
         artistRepository.delete(artist);
     }
 
-    public String isArtistRegistered(String username, String password) {
+    public Artist isArtistRegistered(String username, String password) {
         Optional<Artist> artistOpt = artistRepository.findByUsername(username);
         if (artistOpt.isPresent()) {
             Artist artist = artistOpt.get();
-            // Compare the plain text passwords directly
             if (artist.getPassword().equals(password)) {
-                // Return the artist's ID instead of true
-                return artist.getId(); // Assuming getId() returns a String ID
+                return artist;
             }
         }
-        return null; // or another indicator that the artist is not registered
+        return null;
     }
 
     // Additional methods for update and delete

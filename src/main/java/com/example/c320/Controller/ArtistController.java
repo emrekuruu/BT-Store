@@ -44,12 +44,11 @@ public class ArtistController {
         return artistService.createArtist(artist);
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<?> loginArtist(@RequestParam String username, @RequestParam String password) {
-        String artistId = artistService.isArtistRegistered(username, password);
-        if (artistId != null) {
-            // Adjust the response to include the artist ID or other relevant information
-            return ResponseEntity.ok("Artist ID: " + artistId);
+        Artist artist = artistService.isArtistRegistered(username, password);
+        if (artist != null) {
+            return ResponseEntity.ok(artist);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
