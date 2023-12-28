@@ -64,8 +64,6 @@ public class ArtistService {
         // Find the artist by ID
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new NoSuchElementException("Artist not found with ID: " + artistId));
-        //Delete artist with old values
-        artistRepository.deleteById(artistId);
         // Update the artist's properties
         artist.setName(updateArtistData.getName());
         artist.setPassword(updateArtistData.getPassword());

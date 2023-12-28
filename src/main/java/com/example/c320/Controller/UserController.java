@@ -99,6 +99,17 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable String userId, @RequestBody User userData) {
+        try {
+            User updatedUser = userService.updateUser(userId, userData);
+            return ResponseEntity.ok(updatedUser);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 }
 

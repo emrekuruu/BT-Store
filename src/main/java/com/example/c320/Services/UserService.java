@@ -157,8 +157,6 @@ public class UserService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
-        //Delete the user with old values
-        userRepository.deleteById(userId);
         // Update the user's properties
         user.setName(updatedUserData.getName());
         user.setSurname(updatedUserData.getSurname());
