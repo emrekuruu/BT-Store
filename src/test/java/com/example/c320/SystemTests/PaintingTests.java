@@ -1,10 +1,4 @@
 package com.example.c320.SystemTests;
-import com.example.c320.Entities.Basket;
-import com.example.c320.Entities.Purchase;
-import com.example.c320.Services.BasketService;
-import com.example.c320.Entities.User;
-import com.example.c320.Services.PurchaseService;
-import com.example.c320.Services.UserService;
 import com.example.c320.Entities.Painting;
 import com.example.c320.Services.PaintingService;
 import com.example.c320.Entities.Artist;
@@ -16,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
-
-import java.util.List;
-
+import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -31,26 +25,30 @@ public class PaintingTests {
     private MongoTemplate mongoTemplate;
     @Autowired
     private PaintingService paintingService;
+    @Autowired
     private ArtistService artistService;
     private static final DockerImageName MONGO_IMAGE = DockerImageName.parse("mongo:4.4.2");
     private static MongoDBContainer mongoDBContainer;
 
     @BeforeAll
     static void setup() {
-        mongoDBContainer = new MongoDBContainer(MONGO_IMAGE);
+        mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:4.4.2"))
+                .waitingFor(Wait.forListeningPort()) // Wait for the container to be ready
+                .withStartupTimeout(Duration.ofMinutes(3));
         mongoDBContainer.start();
-        System.setProperty("spring.data.mongodb.uri", mongoDBContainer.getReplicaSetUrl());
+
+        // Use the dynamically assigned port
+        String uri = String.format("mongodb://%s:%d/testdb",
+                mongoDBContainer.getHost(),
+                mongoDBContainer.getFirstMappedPort());
+
+        System.setProperty("spring.data.mongodb.uri", uri);
     }
 
     @BeforeEach
-    void clearDatabaseBeforeTest() {
-        mongoTemplate.getDb().drop(); // This will drop the entire database
-    }
-
-    @AfterAll
-    static void tearDown() {
-        if (mongoDBContainer != null) {
-            mongoDBContainer.stop();
+    void clearCollectionsBeforeTest() {
+        for (String collectionName : mongoTemplate.getDb().listCollectionNames()) {
+            mongoTemplate.remove(new Query(), collectionName);
         }
     }
 
@@ -60,16 +58,20 @@ public class PaintingTests {
         painting.setId("123");
         painting.setPrice(10.);
         painting.setName("First Painting");
+
         Artist artist = new Artist();
         artist.setId("12");
+
+        artistService.createArtist(artist);
         artistService.addPainting(painting,"12");
+
         Painting uptadePainting = new Painting();
         uptadePainting.setPrice(20.);
         uptadePainting.setId("124");
         uptadePainting.setName("updated");
         paintingService.updatePainting("123",uptadePainting);
-        assertEquals(20.0, paintingService.getPaintingById("123").get().getPrice(), 0.01,"Price edited correctly");
 
+        assertEquals(20.0, paintingService.getPaintingById("123").get().getPrice(), 0.01,"Price edited correctly");
     }
 
 }

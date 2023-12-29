@@ -17,6 +17,8 @@ public class ArtistService {
     private ArtistRepository artistRepository;
     @Autowired
     private PaintingRepository paintingRepository;
+    @Autowired
+    private PaintingService paintingService;
     public List<Artist> getAllArtists() {
         return artistRepository.findAll();
     }
@@ -41,11 +43,11 @@ public class ArtistService {
         // Find the artist by ID
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new NoSuchElementException("Artist not found with ID: " + artistId));
-
         // Delete all paintings by this artist
         List<Painting> paintings = artist.getPaintings();
-        paintingRepository.deleteAll(paintings);
-
+        for(Painting p : paintings){
+            paintingService.deletePainting(p.getId());
+        }
         // Delete the artist
         artistRepository.delete(artist);
     }

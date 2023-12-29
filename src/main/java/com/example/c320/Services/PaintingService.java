@@ -39,6 +39,7 @@ public class PaintingService {
         painting.setName(updatedPaintingData.getName());
         painting.setDescription(updatedPaintingData.getDescription());
         painting.setPrice(updatedPaintingData.getPrice());
+        painting.setUrl(updatedPaintingData.getUrl());
         // Update other fields as needed
 
         // Save the updated painting

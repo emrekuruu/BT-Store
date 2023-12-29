@@ -82,6 +82,7 @@ public class UserService {
             basket.setTotal(newTotal);
         }
 
+
         // Save the updated basket and user as before
         basketRepository.save(basket);
         return userRepository.save(user);

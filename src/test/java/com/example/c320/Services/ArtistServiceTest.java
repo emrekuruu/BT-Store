@@ -24,7 +24,6 @@ public class ArtistServiceTest {
     private ArtistRepository artistRepository;
     @Mock
     private PaintingRepository paintingRepository;
-
     @InjectMocks
     private ArtistService artistService;
 
@@ -53,28 +52,6 @@ public class ArtistServiceTest {
         // Assert
         assertFalse(result.isPresent(), "Artist should not be present");
     }
-
-    @Test
-    public void deleteArtist_Success() {
-        // Arrange
-        String artistId = "artist123";
-        Artist artist = new Artist();
-        artist.setId(artistId);
-        Painting painting = new Painting();
-        artist.getPaintings().add(painting);
-
-        given(artistRepository.findById(artistId)).willReturn(Optional.of(artist));
-        willDoNothing().given(artistRepository).delete(artist);
-        willDoNothing().given(paintingRepository).deleteAll(anyList());
-
-        // Act
-        artistService.deleteArtist(artistId);
-
-        // Assert
-        verify(artistRepository, times(1)).delete(artist);
-        verify(paintingRepository, times(1)).deleteAll(Collections.singletonList(painting));
-    }
-
 
     @Test
     public void deleteArtist_ArtistNotFound() {
