@@ -153,5 +153,20 @@ public class UserService {
         return purchase;
     }
 
+    public User updateUser(String userId,User updatedUserData){
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
+        // Update the user's properties
+        user.setName(updatedUserData.getName());
+        user.setSurname(updatedUserData.getSurname());
+        user.setUsername(updatedUserData.getUsername());
+        user.setPassword(updatedUserData.getPassword());
+        //Save the updated user
+        userRepository.save(user);
+
+        return user;
+    }
+
     // Additional methods for update and delete
 }

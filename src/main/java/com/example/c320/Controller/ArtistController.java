@@ -73,5 +73,17 @@ public class ArtistController {
         return artistService.addPainting(painting,artistId);
     }
 
+    @PutMapping("/update/{artistId}")
+    public ResponseEntity<Artist> updateArtist(@PathVariable String artistId, @RequestBody Artist artistData) {
+        try {
+            Artist updatedArtist = artistService.updateArtist(artistId, artistData);
+            return ResponseEntity.ok(updatedArtist);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }
 

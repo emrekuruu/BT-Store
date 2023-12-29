@@ -88,7 +88,8 @@ public class ArtistTests {
         artist.setName("Picasso");
         artistService.createArtist(artist);
         Artist found = artistService.getArtistByName("Picasso").orElse(null);
-        //Check if found == artist
+        assertEquals(artist, found,"Filtering by name works properly");
+
     }
 
     @Test
@@ -98,7 +99,8 @@ public class ArtistTests {
         artist.setName("Picasso");
         artistService.createArtist(artist);
         Artist found = artistService.getArtistById("123").orElse(null);
-        //Check if found == artist
+        assertEquals(artist, found,"Filtering by id works properly");
+
     }
 
     public void testIfDeletedArtistsPaintingsDeleted() {
@@ -115,6 +117,8 @@ public class ArtistTests {
         artistService.deleteArtist("1");
         Painting found = paintingService.getPaintingById("123").orElse(null);
         Painting found2 = paintingService.getPaintingById("124").orElse(null);
+        assertNull(found,"Painting does no longer exist");
+        assertNull(found2,"Painting2 does no longer exist");
     }
 
     public void testIfDeletedArtistsPaintingsDeletedFromUsersBasket() {
@@ -138,6 +142,6 @@ public class ArtistTests {
         userService.addPaintingToBasket("12", "124");
         artistService.deleteArtist("1");
         List<Painting> found = basketService.getBasketById("1234").get().getPaintings();
-
+        assertTrue(found.isEmpty(),"Deleted artists paintings deleted from user's basket");
     }
 }

@@ -80,6 +80,8 @@ public class UserTests {
         userService.addPaintingToBasket("12","124");
         userService.deleteUser("12");
         Basket found =  basketService.getBasketById("1234").orElse(null);
+        assertNull(found,"Basket should be deleted");
+
     }
 
 }
