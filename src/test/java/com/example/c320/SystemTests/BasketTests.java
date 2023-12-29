@@ -16,6 +16,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -66,7 +68,9 @@ public class BasketTests {
         painting.setId("123");
         artistService.addPainting(painting,"1");
         userService.addPaintingToBasket("12","123");
-        userService.addPaintingToBasket("12","123"); // Should throw a message that the painting is already in basket.
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.addPaintingToBasket("12", "123"); // Should throw a message that the painting is already in basket.
+        });
     }
     @Test
     public void testEmptyBasketWhenPurchaseMade(){ // To test if the basket is empty after purchase
@@ -98,9 +102,8 @@ public class BasketTests {
         purchase.setPaintings(basket.getPaintings());
         purchase.setUserID("12");
         purchaseService.createPurchase(purchase);
-        if(basketService.getBasketById("1234").get().getPaintings() == null){
-            //WORKS CORRECTLY
-        }
+        assertTrue(basketService.getBasketById("1234").get().getPaintings().isEmpty(),"Basket is empty");
+
     }
     @Test
     public void testIfTotalCalculatedCorrectly(){ // To test if total price is calculated correctly
@@ -130,9 +133,7 @@ public class BasketTests {
         userService.addPaintingToBasket("12","124");
         userService.addPaintingToBasket("12","125");
         userService.removePaintingFromBasket("12","124");
-        if(basketService.getBasketById("1234").get().getTotal() == 50.){
-            //WORKS CORRECTLY
-        }
+        assertEquals(50.0, basketService.getBasketById("1234").get().getTotal(), 0.01,"Total calculated correctly");
     }
 }
 

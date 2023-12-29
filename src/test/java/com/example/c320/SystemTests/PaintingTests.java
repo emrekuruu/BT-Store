@@ -68,9 +68,8 @@ public class PaintingTests {
         uptadePainting.setId("124");
         uptadePainting.setName("updated");
         paintingService.updatePainting("123",uptadePainting);
-        if(paintingService.getPaintingById("123").get().getPrice() == 20.){
-            //Works corretly
-        }
+        assertEquals(20.0, paintingService.getPaintingById("123").get().getPrice(), 0.01,"Price edited correctly");
+
     }
 
 }

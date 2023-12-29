@@ -91,6 +91,7 @@ public class PurchaseTests {
         purchaseService.createPurchase(purchase);
         Painting found1 =  paintingService.getPaintingById("123").get();
         Painting found2 =  paintingService.getPaintingById("124").get();
-        //CHECK IF THEY ARE EXIST
+        assertFalse(paintingService.getPaintingById("123").isPresent()); // Assert that painting with ID "123" is not present
+        assertFalse(paintingService.getPaintingById("124").isPresent()); // Assert that painting with ID "124" is not present
     }
 }
