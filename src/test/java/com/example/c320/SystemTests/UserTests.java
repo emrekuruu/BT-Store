@@ -79,5 +79,57 @@ public class UserTests {
         Basket found =  basketService.getBasketById(basket.getId()).orElse(null);
         assertNull(found,"Basket should be deleted");
     }
+    @Test
+    public void testIfExistingUserLoginWithValidPass() {
+        // Arrange
+        String username = "testUser";
+        String password = "testPassword";
+        User expectedUser = new User();
+        expectedUser.setUsername(username);
+        expectedUser.setPassword(password);
+        userService.createUser(expectedUser);
+
+        // Act
+        User authenticatedUser = userService.isUserRegistered(username, password);
+
+        // Assert
+        assertNotNull(authenticatedUser, "User should be authenticated");
+        assertEquals(username, authenticatedUser.getUsername(), "Username should match");
+        assertEquals(password, authenticatedUser.getPassword(), "Password should match");
+    }
+
+    @Test
+    public void testIfExistingUserLoginWithInvalidPass() {
+        // Arrange
+        String username = "testUser";
+        String correctPassword = "correctPassword";
+        String incorrectPassword = "incorrectPassword";
+        User expectedUser = new User();
+        expectedUser.setUsername(username);
+        expectedUser.setPassword(correctPassword);
+        userService.createUser(expectedUser);
+
+        // Act
+        User authenticatedUser = userService.isUserRegistered(username, incorrectPassword);
+
+        // Assert
+        assertNull(authenticatedUser, "Authentication should fail for incorrect password");
+    }
+
+    @Test
+    public void testIfNonExistingUserLogin() {
+        // Arrange
+        String username = "nonexistentUser";
+        String password = "testPassword";
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+
+        // Act
+        User authenticatedUser = userService.isUserRegistered(username, password);
+
+        // Assert
+        assertNull(authenticatedUser, "Authentication should fail for non-existing user");
+    }
 
 }
