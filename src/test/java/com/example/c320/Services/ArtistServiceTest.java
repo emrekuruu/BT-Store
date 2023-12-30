@@ -10,7 +10,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
@@ -66,5 +70,54 @@ public class ArtistServiceTest {
 
         verify(artistRepository, never()).delete(any(Artist.class));
     }
+    @Test
+    public void authenticate_ValidCredentials_ReturnsArtist() {
+        // Arrange
+        String username = "testUser";
+        String password = "testPassword";
+        Artist expectedArtist = new Artist();
+        expectedArtist.setUsername(username);
+        expectedArtist.setPassword(password);
+        given(artistRepository.findByUsername(username)).willReturn(Optional.of(expectedArtist));
 
+        // Act
+        Artist authenticatedArtist = artistService.isArtistRegistered(username, password);
+
+        // Assert
+        assertNotNull(authenticatedArtist, "Artist should be authenticated");
+        assertEquals(username, authenticatedArtist.getUsername(), "Username should match");
+        assertEquals(password, authenticatedArtist.getPassword(), "Password should match");
+    }
+
+    @Test
+    public void authenticate_InvalidUsername_ReturnsNull() {
+        // Arrange
+        String username = "nonexistentUser";
+        String password = "testPassword";
+        given(artistRepository.findByUsername(username)).willReturn(Optional.empty());
+
+        // Act
+        Artist authenticatedArtist = artistService.isArtistRegistered(username, password);
+
+        // Assert
+        assertNull(authenticatedArtist, "Artist should not be authenticated");
+    }
+
+    @Test
+    public void authenticate_InvalidPassword_ReturnsNull() {
+        // Arrange
+        String username = "testUser";
+        String correctPassword = "correctPassword";
+        String incorrectPassword = "incorrectPassword";
+        Artist expectedArtist = new Artist();
+        expectedArtist.setUsername(username);
+        expectedArtist.setPassword(correctPassword);
+        given(artistRepository.findByUsername(username)).willReturn(Optional.of(expectedArtist));
+
+        // Act
+        Artist authenticatedArtist = artistService.isArtistRegistered(username, incorrectPassword);
+
+        // Assert
+        assertNull(authenticatedArtist, "Artist should not be authenticated");
+    }
 }

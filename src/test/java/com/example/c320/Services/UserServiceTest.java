@@ -12,7 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -282,6 +287,56 @@ public class UserServiceTest {
             userService.purchase(userId);
         }, "Should throw IllegalStateException when basket is empty");
     }
+        
 
+    @Test
+    public void authenticate_ValidCredentials_ReturnsUser() {
+        // Arrange
+        String username = "testUser";
+        String password = "testPassword";
+        User expectedUser = new User();
+        expectedUser.setUsername(username);
+        expectedUser.setPassword(password);
+        given(userRepository.findByUsername(username)).willReturn(Optional.of(expectedUser));
 
+        // Act
+        User authenticatedUser = userService.isUserRegistered(username, password);
+
+        // Assert
+        assertNotNull(authenticatedUser, "User should be authenticated");
+        assertEquals(username, authenticatedUser.getUsername(), "Username should match");
+        assertEquals(password, authenticatedUser.getPassword(), "Password should match");
+    }
+
+    @Test
+    public void authenticate_InvalidUsername_ReturnsNull() {
+        // Arrange
+        String username = "nonexistentUser";
+        String password = "testPassword";
+        given(userRepository.findByUsername(username)).willReturn(Optional.empty());
+
+        // Act
+        User authenticatedUser = userService.isUserRegistered(username, password);
+
+        // Assert
+        assertNull(authenticatedUser, "User should not be authenticated");
+    }
+
+    @Test
+    public void authenticate_InvalidPassword_ReturnsNull() {
+        // Arrange
+        String username = "testUser";
+        String correctPassword = "correctPassword";
+        String incorrectPassword = "incorrectPassword";
+        User expectedUser = new User();
+        expectedUser.setUsername(username);
+        expectedUser.setPassword(correctPassword);
+        given(userRepository.findByUsername(username)).willReturn(Optional.of(expectedUser));
+
+        // Act
+        User authenticatedUser = userService.isUserRegistered(username, incorrectPassword);
+
+        // Assert
+        assertNull(authenticatedUser, "User should not be authenticated");
+    }
 }
