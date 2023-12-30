@@ -159,4 +159,55 @@ public class ArtistTests {
         List<Painting> found = userService.getUserById("12").get().getBasket().getPaintings();
         assertTrue(found.isEmpty(),"Deleted artists paintings deleted from user's basket");
     }
+    @Test
+    public void testIfExistingUserLoginWithValidPass(){
+        // Arrange
+        String username = "testArtist";
+        String password = "testPassword";
+        Artist expectedArtist = new Artist();
+        expectedArtist.setUsername(username);
+        expectedArtist.setPassword(password);
+        artistService.createArtist(expectedArtist);
+
+        // Act
+        Artist authenticatedArtist = artistService.isArtistRegistered(username, password);
+
+        // Assert
+        assertNotNull(authenticatedArtist, "Artist should be authenticated");
+        assertEquals(username, authenticatedArtist.getUsername(), "Username should match");
+        assertEquals(password, authenticatedArtist.getPassword(), "Password should match");
+    }
+
+    @Test
+    public void TestIfExistingUserLoginWithInvalidPass(){
+        // Arrange
+        String username = "testArtist";
+        String correctPassword = "correctPassword";
+        String incorrectPassword = "incorrectPassword";
+        Artist expectedArtist = new Artist();
+        expectedArtist.setUsername(username);
+        expectedArtist.setPassword(correctPassword);
+        artistService.createArtist(expectedArtist);
+        // Act
+        Artist authenticatedArtist = artistService.isArtistRegistered(username, incorrectPassword);
+
+        // Assert
+        assertNull(authenticatedArtist, "Authentication should fail for incorrect password");
+
+    }
+    @Test
+    public void TestIfNonExistingUserLogin(){
+        // Arrange
+        String username = "nonexistentArtist";
+        String password = "testPassword";
+        Artist artist = new Artist();
+        artist.setUsername(username);
+        artist.setPassword(password);
+        // Act
+        Artist authenticatedArtist = artistService.isArtistRegistered(username, password);
+
+        // Assert
+        assertNull(authenticatedArtist, "Authentication should fail for invalid username");
+
+    }
 }
