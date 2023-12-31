@@ -10,7 +10,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
@@ -66,5 +71,35 @@ public class ArtistServiceTest {
 
         verify(artistRepository, never()).delete(any(Artist.class));
     }
+   
+    @Test
+    public void updateArtist() {
+    // Arrange
+    String artistId = "existingArtist";
+    Artist originalArtist = new Artist();
+    originalArtist.setId(artistId);
+    originalArtist.setName("Original Name");
+    originalArtist.setSurname("Original Surname");
+    originalArtist.setUsername("original_username");
+    originalArtist.setPassword("original_password");
 
+    Artist updatedArtistData = new Artist();
+    updatedArtistData.setName("Updated Name");
+    updatedArtistData.setSurname("Updated Surname");
+    updatedArtistData.setUsername("updated_username");
+    updatedArtistData.setPassword("updated_password");
+
+    given(artistRepository.findById(artistId)).willReturn(Optional.of(originalArtist));
+    given(artistRepository.save(any(Artist.class))).willAnswer(invocation -> invocation.getArgument(0));
+
+    // Act
+    Artist updatedArtist = artistService.updateArtist(artistId, updatedArtistData);
+
+    // Assert
+    assertNotNull(updatedArtist);
+    assertEquals(updatedArtistData.getName(), updatedArtist.getName());
+    assertEquals(updatedArtistData.getSurname(), updatedArtist.getSurname());
+    assertEquals(updatedArtistData.getUsername(), updatedArtist.getUsername());
+    assertEquals(updatedArtistData.getPassword(), updatedArtist.getPassword());
+}
 }

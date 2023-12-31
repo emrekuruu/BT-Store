@@ -12,7 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -281,6 +286,36 @@ public class UserServiceTest {
         assertThrows(IllegalStateException.class, () -> {
             userService.purchase(userId);
         }, "Should throw IllegalStateException when basket is empty");
+    }
+    @Test
+    public void updateUser() {
+        // Arrange
+        String userId = "existingUser";
+        User originalUser = new User();
+        originalUser.setId(userId);
+        originalUser.setName("Original Name");
+        originalUser.setSurname("Original Surname");
+        originalUser.setUsername("original_username");
+        originalUser.setPassword("original_password");
+
+        User updatedUserData = new User();
+        updatedUserData.setName("Updated Name");
+        updatedUserData.setSurname("Updated Surname");
+        updatedUserData.setUsername("updated_username");
+        updatedUserData.setPassword("updated_password");
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(originalUser));
+        given(userRepository.save(any(User.class))).willAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        User updatedUser = userService.updateUser(userId, updatedUserData);
+
+        // Assert
+        assertNotNull(updatedUser);
+        assertEquals(updatedUserData.getName(), updatedUser.getName());
+        assertEquals(updatedUserData.getSurname(), updatedUser.getSurname());
+        assertEquals(updatedUserData.getUsername(), updatedUser.getUsername());
+        assertEquals(updatedUserData.getPassword(), updatedUser.getPassword());
     }
 
 
